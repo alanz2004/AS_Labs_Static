@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Demo — Predictive Re-Booking Agent</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script>tailwind.config={theme:{extend:{fontFamily:{display:['"Space Grotesk"','sans-serif'],mono:['"JetBrains Mono"','monospace']}}}};</script>
+<style>
+  body{background:#09090b}
+  .caret::after{content:'▌';color:#f59e0b;animation:blink 1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+</style>
+</head>
+<body class="min-h-screen font-display text-zinc-200 px-4 py-8 md:px-10">
+<div class="mx-auto max-w-5xl">
+<header class="mb-6 flex flex-wrap items-end justify-between gap-3">
+  <div>
+    <a href="index.html" class="font-mono text-xs text-zinc-500 hover:text-amber-400">← all marketing agents</a>
+    <h1 class="mt-1 text-xl font-semibold tracking-tight text-zinc-100">Predictive Re-Booking Agent <span class="text-amber-400">· live demo</span></h1>
+    <p class="mt-1 text-sm text-zinc-500">Past guests are the cheapest high-margin revenue you have. The agent segments them, predicts <i>when</i> each starts planning, and reaches out at that exact window.</p>
+  </div>
+  <div class="flex gap-5 text-right font-mono text-xs text-zinc-500">
+    <div><p>Projected direct rev</p><p class="text-xl font-semibold text-emerald-400" id="rev">₪0</p></div>
+    <div><p>CAC on these</p><p class="text-xl font-semibold text-amber-400">~₪0</p></div>
+  </div>
+</header>
+
+<div class="mb-4 rounded-xl border border-zinc-800 bg-zinc-900/60 p-4">
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <p class="text-sm text-zinc-400">Guest database: <b class="text-zinc-200">1,847 past guests</b> · 4 seasons of stay history, origin, group type, and booking-lead-time patterns.</p>
+    <button id="seg" onclick="segment()" class="rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-zinc-950 transition hover:bg-amber-400">▶ Segment & predict</button>
+  </div>
+  <div id="segout" class="mt-3 hidden font-mono text-[11.5px] leading-relaxed text-zinc-500"></div>
+</div>
+
+<div id="segments" class="hidden grid gap-3 md:grid-cols-3"></div>
+
+<div id="detail" class="mt-4 hidden rounded-xl border border-zinc-800 bg-zinc-900/60 p-5">
+  <p class="font-mono text-[10px] uppercase tracking-widest text-amber-400" id="d-seg"></p>
+  <p class="mt-1 text-sm text-zinc-400" id="d-why"></p>
+  <div class="mt-3 rounded-lg border border-emerald-500/25 bg-emerald-500/5 p-4">
+    <p class="mb-1.5 font-mono text-[10px] uppercase tracking-widest text-emerald-400">personalized outreach — fires automatically at the predicted window</p>
+    <pre class="whitespace-pre-wrap font-mono text-[12px] leading-relaxed text-zinc-300" id="d-msg"><span class="stream"></span></pre>
+    <p class="mt-2 font-mono text-[10px] text-zinc-600" id="d-timing"></p>
+  </div>
+</div>
+
+<div id="summary" class="mt-4 hidden rounded-xl border border-emerald-500/25 bg-emerald-500/5 p-4">
+  <p class="font-mono text-xs uppercase tracking-widest text-emerald-400">Campaign projection</p>
+  <p class="mt-2 text-sm text-zinc-300">Across all segments, timed-outreach re-booking typically lifts repeat direct bookings <b class="text-emerald-400">30–40%</b> vs generic blasts. On this list that models to <b class="text-emerald-400">~₪310,000/year</b> in repeat direct revenue at near-zero acquisition cost — because you already paid to acquire these guests once.</p>
+  <p class="mt-2 text-xs text-zinc-500">Modeled figures — the audit computes the real numbers from the client's PMS export. Every message is opt-in, carries an unsubscribe, and can require human approval.</p>
+  <button onclick="location.reload()" class="mt-3 rounded-lg border border-zinc-700 px-4 py-2 text-sm text-zinc-400 hover:border-zinc-500">↻ Run again</button>
+</div>
+
+<p class="mt-4 rounded-lg border border-zinc-800 bg-zinc-900/40 p-3 text-xs text-zinc-500">The predictive part is the point: European families booking summer Tel Aviv trips ~120 days ahead get contacted in the planning window, not after the flights are booked. Timing is what turns an ignored email blast into a booking.</p>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+let rev=0;
+
+const SEG=[
+ {id:'eu-fam', name:'🇪🇺 European families', size:412, lead:'~120 days ahead', color:'sky',
+  why:'Books summer Tel Aviv trips about 4 months out. Right now (late July) is the exact window they plan next summer — and the moment to reach them before they default to a hotel or Airbnb.',
+  msg:"Bonjour famille Dubois ! Vous avez adoré Dizengoff 210 l'été dernier — et c'est justement le moment de réserver l'été prochain. En tant que clients fidèles : ₪610/nuit en direct (au lieu de ₪695), lit bébé inclus, et check-in prioritaire. Je bloque vos dates ?",
+  timing:'fires 120 days before their historical travel window · WhatsApp + email',
+  bookings:42, avg:5000},
+ {id:'us-couple', name:'🇺🇸 US couples', size:287, lead:'~75 days ahead', color:'amber',
+  why:'Shorter lead time, higher nightly spend, values upgrades over discounts. Responds to VIP framing — early check-in, room upgrade — more than to price cuts.',
+  msg:"Hi Sarah & Mike! Your Rothschild 33 stay is still one of our favorites. As returning guests you get a complimentary upgrade to our sea-view unit + guaranteed early check-in, at your original direct rate. Planning a return this fall?",
+  timing:'fires 75 days before their seasonal pattern · email-first',
+  bookings:31, avg:4200},
+ {id:'repeat-vip', name:'⭐ 3+ stay VIPs', size:64, lead:'anytime · relationship-based', color:'emerald',
+  why:'Your most valuable guests — booked 3+ times. Highest LTV, near-guaranteed rebook. These get a human-touched note, not an automated one, but the agent flags the timing and drafts it.',
+  msg:"היי דנה ויובל! אתם כבר חלק מהבית. שמרנו לכם את רוטשילד 33 לחג הבא במחיר האורח המועדף שלכם, עם צ׳ק-אאוט מאוחר מובטח. רוצים שנתאם?",
+  timing:'flagged for personal outreach · agent drafts, you send',
+  bookings:38, avg:4800},
+];
+
+async function segment(){
+  $('seg').disabled=true; $('seg').textContent='Analyzing…';
+  const out=$('segout'); out.classList.remove('hidden');
+  const lines=[
+   '<span class="text-amber-400">▸ segment</span> by origin · stay frequency · group type · season',
+   '<span class="text-emerald-400">✓</span> 1,847 guests → 7 behavioral segments (top 3 shown)',
+   '<span class="text-amber-400">▸ predict_timing</span> model each segment\'s booking-lead-time pattern',
+   '<span class="text-emerald-400">✓</span> outreach windows computed · campaigns queued per segment',
+  ];
+  for(const l of lines){ const p=document.createElement('p'); p.innerHTML=l; out.appendChild(p); await sleep(600); }
+  renderSegs();
+}
+
+function renderSegs(){
+  const wrap=$('segments'); wrap.classList.remove('hidden');
+  const cmap={sky:'border-sky-500/30 hover:border-sky-500/50',amber:'border-amber-500/30 hover:border-amber-500/50',emerald:'border-emerald-500/30 hover:border-emerald-500/50'};
+  wrap.innerHTML=SEG.map(s=>`
+    <button onclick="showSeg('${s.id}')" class="rounded-xl border ${cmap[s.color]} bg-zinc-900/60 p-4 text-left transition">
+      <p class="text-sm font-semibold text-zinc-100">${s.name}</p>
+      <p class="mt-1 font-mono text-[11px] text-zinc-500">${s.size} guests · books ${s.lead}</p>
+      <p class="mt-2 font-mono text-[10px] text-amber-400">tap to see the timed outreach →</p>
+    </button>`).join('');
+  $('summary').classList.remove('hidden');
+  rev = SEG.reduce((a,s)=>a+s.bookings*s.avg,0);
+  $('rev').textContent='₪'+rev.toLocaleString();
+}
+
+async function showSeg(id){
+  const s=SEG.find(x=>x.id===id);
+  $('detail').classList.remove('hidden');
+  $('d-seg').textContent=s.name+' · '+s.size+' guests';
+  $('d-why').textContent=s.why;
+  $('d-timing').textContent='⏱ '+s.timing;
+  const span=$('detail').querySelector('.stream'); span.textContent=''; span.classList.add('caret');
+  $('detail').scrollIntoView({behavior:'smooth',block:'center'});
+  for(let i=0;i<s.msg.length;i+=3){ span.textContent=s.msg.slice(0,i+3); await sleep(12); }
+  span.textContent=s.msg; span.classList.remove('caret');
+}
+</script>
+</body>
+</html>
