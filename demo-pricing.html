@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Demo — Dynamic Pricing Agent</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script>tailwind.config={theme:{extend:{fontFamily:{display:['"Space Grotesk"','sans-serif'],mono:['"JetBrains Mono"','monospace']}}}};</script>
+<style>body{background:#09090b}</style>
+</head>
+<body class="min-h-screen font-display text-zinc-200 px-4 py-8 md:px-10">
+<div class="mx-auto max-w-5xl">
+<header class="mb-6 flex flex-wrap items-end justify-between gap-3">
+  <div>
+    <a href="index.html" class="font-mono text-xs text-zinc-500 hover:text-amber-400">&larr; all marketing agents</a>
+    <h1 class="mt-1 text-xl font-semibold tracking-tight text-zinc-100">Dynamic Pricing Agent <span class="text-amber-400">&middot; live demo</span></h1>
+    <p class="mt-1 text-sm text-zinc-500">Static rates leave money on the table every night. Watch the agent reprice a 14-night window against real demand signals — and explain every move.</p>
+  </div>
+  <div class="flex gap-5 text-right font-mono text-xs text-zinc-500">
+    <div><p>Static-rate revenue</p><p class="text-lg font-semibold text-rose-400" id="base">&#8362;0</p></div>
+    <div><p>Optimized revenue</p><p class="text-lg font-semibold text-emerald-400" id="opt">&#8362;0</p></div>
+  </div>
+</header>
+
+<div class="mb-4 rounded-xl border border-zinc-800 bg-zinc-900/60 p-4">
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <div>
+      <p class="text-sm font-semibold text-zinc-100">HaYarkon 156 &middot; Apt 2 &middot; sea view</p>
+      <p class="font-mono text-[11px] text-zinc-500">Current flat rate: &#8362;600/night &middot; next 14 nights</p>
+    </div>
+    <button id="run" onclick="optimize()" class="rounded-lg bg-amber-500 px-5 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-amber-400">&#9654; Run repricing</button>
+  </div>
+</div>
+
+<!-- signals -->
+<div id="signals" class="mb-4 hidden grid gap-2 md:grid-cols-4 text-center font-mono text-[11px]">
+  <div class="rounded-lg border border-zinc-800 bg-zinc-900/60 p-3"><p class="text-zinc-600">DEMAND</p><p class="mt-1 text-sky-400">booking velocity +40%</p></div>
+  <div class="rounded-lg border border-zinc-800 bg-zinc-900/60 p-3"><p class="text-zinc-600">EVENT</p><p class="mt-1 text-amber-400">Tech Week Sep 12-14</p></div>
+  <div class="rounded-lg border border-zinc-800 bg-zinc-900/60 p-3"><p class="text-zinc-600">COMPETITORS</p><p class="mt-1 text-emerald-400">avg &#8362;720 nearby</p></div>
+  <div class="rounded-lg border border-zinc-800 bg-zinc-900/60 p-3"><p class="text-zinc-600">GAP</p><p class="mt-1 text-rose-400">2 empty mid-week nights</p></div>
+</div>
+
+<!-- calendar -->
+<div id="cal" class="hidden rounded-xl border border-zinc-800 bg-zinc-900/60 p-4">
+  <p class="mb-3 text-xs font-medium uppercase tracking-widest text-zinc-500">Repriced calendar &middot; every change explained</p>
+  <div id="grid" class="space-y-1.5"></div>
+</div>
+
+<!-- summary -->
+<div id="summary" class="mt-4 hidden rounded-xl border border-emerald-500/25 bg-emerald-500/5 p-4">
+  <p class="font-mono text-xs uppercase tracking-widest text-emerald-400">14-night result</p>
+  <p class="mt-2 text-sm text-zinc-300">Static pricing: <span id="s-base" class="text-rose-400"></span> &middot; optimized: <span id="s-opt" class="text-emerald-400"></span> &middot; <b class="text-emerald-400" id="s-lift"></b> more from the same 14 nights — by charging more when demand is high and filling the gaps when it's soft.</p>
+  <p class="mt-2 text-xs text-zinc-500">Industry benchmark: AI dynamic pricing lifts revenue 15-30% over static rates. Modeled here — the audit runs it on the client's real occupancy and comp set. You keep min/max guardrails; the agent never prices outside them.</p>
+  <button onclick="location.reload()" class="mt-3 rounded-lg border border-zinc-700 px-4 py-2 text-sm text-zinc-400 hover:border-zinc-500">&#8635; Run again</button>
+</div>
+
+<p class="mt-4 rounded-lg border border-zinc-800 bg-zinc-900/40 p-3 text-xs text-zinc-500">What stays human (from the research): the agent handles nightly rate moves within your rules — long-term positioning, min/max floors and ceilings, and season strategy stay yours. It explains every change in plain language so you're never guessing why a night moved.</p>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+// 14 nights: [label, occupied?, optimized rate, reason]
+const NIGHTS=[
+ ['Sep 8',true,600,'booked — no change'],
+ ['Sep 9',false,540,'soft mid-week → drop to fill (was empty at &#8362;600)'],
+ ['Sep 10',false,540,'soft mid-week → drop to fill'],
+ ['Sep 11',true,600,'booked'],
+ ['Sep 12',false,860,'Tech Week + comps &#8362;720 → raise hard'],
+ ['Sep 13',false,880,'Tech Week peak night → raise hard'],
+ ['Sep 14',false,820,'Tech Week tail → raise'],
+ ['Sep 15',true,600,'booked'],
+ ['Sep 16',false,620,'weekend approach → nudge up'],
+ ['Sep 17',false,720,'Friday + high velocity → raise'],
+ ['Sep 18',false,740,'Saturday peak → raise'],
+ ['Sep 19',false,600,'Sunday → hold'],
+ ['Sep 20',true,600,'booked'],
+ ['Sep 21',false,560,'Sunday night soft → slight drop'],
+];
+const FLAT=600;
+async function optimize(){
+  $('run').disabled=true; $('run').textContent='Analyzing signals...';
+  $('signals').classList.remove('hidden'); await sleep(900);
+  $('cal').classList.remove('hidden');
+  const grid=$('grid');
+  let base=0, opt=0;
+  for(const [label,occ,rate,reason] of NIGHTS){
+    // static: only occupied nights earn (empty nights at flat rate stay empty here for contrast on event nights)
+    const staticEarn = occ ? FLAT : (rate>FLAT? 0 : FLAT); // soft nights would've sat empty at flat; event nights definitely empty at flat
+    const optEarn = rate; // optimized fills or lifts
+    base += staticEarn; opt += optEarn;
+    $('base').textContent='&#8362;'+base.toLocaleString().replace(/&#8362;/,'');
+    const up = rate>FLAT, down = rate<FLAT;
+    const color = occ?'text-zinc-500':(up?'text-emerald-400':down?'text-sky-400':'text-zinc-400');
+    const row=document.createElement('div');
+    row.className='flex items-center gap-3 rounded-md border border-zinc-800/70 bg-zinc-950 px-3 py-2 font-mono text-[12px]';
+    row.innerHTML=`<span class="w-16 text-zinc-400">${label}</span>
+      <span class="w-16 ${occ?'text-zinc-600':'text-zinc-300'}">${occ?'booked':'open'}</span>
+      <span class="w-20 ${color}">&#8362;${rate}</span>
+      <span class="flex-1 text-zinc-500">${reason}</span>`;
+    grid.appendChild(row); row.scrollIntoView({block:'nearest'});
+    $('base').textContent='&#8362;'+base.toLocaleString();
+    $('opt').textContent='&#8362;'+opt.toLocaleString();
+    await sleep(320);
+  }
+  $('s-base').textContent='&#8362;'+base.toLocaleString();
+  $('s-opt').textContent='&#8362;'+opt.toLocaleString();
+  const lift=Math.round((opt-base)/base*100);
+  $('s-lift').textContent='+'+lift+'% ('+('&#8362;'+(opt-base).toLocaleString())+')';
+  $('s-lift').innerHTML='+'+lift+'% (&#8362;'+(opt-base).toLocaleString()+')';
+  $('summary').classList.remove('hidden');
+  $('run').textContent='Done';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Demo — Guest Screening & Damage Detection Agent</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script>tailwind.config={theme:{extend:{fontFamily:{display:['"Space Grotesk"','sans-serif'],mono:['"JetBrains Mono"','monospace']}}}};</script>
+<style>body{background:#09090b}</style>
+</head>
+<body class="min-h-screen font-display text-zinc-200 px-4 py-8 md:px-10">
+<div class="mx-auto max-w-5xl">
+<header class="mb-6 flex flex-wrap items-end justify-between gap-3">
+  <div>
+    <a href="index.html" class="font-mono text-xs text-zinc-500 hover:text-amber-400">&larr; all marketing agents</a>
+    <h1 class="mt-1 text-xl font-semibold tracking-tight text-zinc-100">Screening &amp; Damage Agent <span class="text-amber-400">&middot; live demo</span></h1>
+    <p class="mt-1 text-sm text-zinc-500">The overlooked layer that stops revenue leaks: screen risky bookings before check-in, catch damage at turnover before it becomes a lost dispute.</p>
+  </div>
+  <div class="text-right font-mono text-xs text-zinc-500">
+    <p>Loss prevented this session</p>
+    <p class="text-2xl font-semibold text-emerald-400" id="saved">&#8362;0</p>
+  </div>
+</header>
+
+<!-- two-tab layout -->
+<div class="mb-4 flex gap-1 rounded-lg border border-zinc-800 bg-zinc-900/60 p-1 font-mono text-xs">
+  <button id="tab-screen" onclick="showTab('screen')" class="flex-1 rounded bg-amber-500 px-3 py-1.5 font-semibold text-zinc-950">1 &middot; Pre-arrival screening</button>
+  <button id="tab-damage" onclick="showTab('damage')" class="flex-1 rounded px-3 py-1.5 text-zinc-400">2 &middot; Turnover damage detection</button>
+</div>
+
+<!-- SCREENING -->
+<section id="s-screen">
+  <div class="rounded-xl border border-zinc-800 bg-zinc-900/60 p-4">
+    <p class="mb-3 text-xs font-medium uppercase tracking-widest text-zinc-500">Incoming reservations — the agent scores each before you approve</p>
+    <div id="bookings" class="space-y-2"></div>
+    <button id="screenBtn" onclick="screenAll()" class="mt-3 rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-zinc-950 transition hover:bg-amber-400">&#9654; Screen all 3 bookings</button>
+  </div>
+</section>
+
+<!-- DAMAGE -->
+<section id="s-damage" class="hidden">
+  <div class="rounded-xl border border-zinc-800 bg-zinc-900/60 p-4">
+    <p class="mb-3 text-xs font-medium uppercase tracking-widest text-zinc-500">Turnover at Herzliya Marina T2 &middot; cleaner uploaded checkout photos</p>
+    <div class="grid gap-2 sm:grid-cols-4">
+      <div class="flex h-24 flex-col items-center justify-center rounded-lg border border-zinc-700 bg-zinc-800 text-3xl">&#128719;<span class="mt-1 font-mono text-[9px] text-zinc-500">living room</span></div>
+      <div class="flex h-24 flex-col items-center justify-center rounded-lg border border-zinc-700 bg-zinc-800 text-3xl">&#128716;<span class="mt-1 font-mono text-[9px] text-zinc-500">kitchen</span></div>
+      <div class="flex h-24 flex-col items-center justify-center rounded-lg border border-zinc-700 bg-zinc-800 text-3xl">&#128715;<span class="mt-1 font-mono text-[9px] text-zinc-500">bathroom</span></div>
+      <div class="flex h-24 flex-col items-center justify-center rounded-lg border border-zinc-700 bg-zinc-800 text-3xl">&#128719;<span class="mt-1 font-mono text-[9px] text-zinc-500">bedroom</span></div>
+    </div>
+    <button id="scanBtn" onclick="scanDamage()" class="mt-3 rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-zinc-950 transition hover:bg-amber-400">&#9654; Analyze turnover photos</button>
+    <div id="damageout" class="mt-3 space-y-2"></div>
+  </div>
+</section>
+
+<p class="mt-4 rounded-lg border border-zinc-800 bg-zinc-900/40 p-3 text-xs text-zinc-500">Trusted guests sail through — only genuine risk triggers extra steps. Industry benchmarks for AI screening: up to 90% fewer fraudulent bookings, ~80% fewer chargebacks, ~70% less manual screening time. Modeled figures; a human makes the final approve/decline call and reviews every flagged photo.</p>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+let saved=0;
+
+function showTab(t){
+  $('s-screen').classList.toggle('hidden', t!=='screen');
+  $('s-damage').classList.toggle('hidden', t!=='damage');
+  $('tab-screen').className='flex-1 rounded px-3 py-1.5 '+(t==='screen'?'bg-amber-500 font-semibold text-zinc-950':'text-zinc-400');
+  $('tab-damage').className='flex-1 rounded px-3 py-1.5 '+(t==='damage'?'bg-amber-500 font-semibold text-zinc-950':'text-zinc-400');
+}
+
+const BOOKINGS=[
+ {name:'Emma Laurent', detail:'Booking.com &middot; 4 nights &middot; verified ID &middot; 12 past stays, no incidents',
+  risk:'LOW', score:8, action:'Auto-approved — trusted guest, no friction added', save:0,
+  trace:'ID verified &middot; email/phone age 6yr &middot; payment card matches name &middot; travel pattern normal'},
+ {name:'"J. Smith"', detail:'Direct site &middot; 1 night, tonight &middot; local IP &middot; new email &middot; 6 guests on a 2-guest listing',
+  risk:'HIGH', score:87, action:'Flagged & held for your review — likely party/chargeback risk', save:4200,
+  trace:'last-minute local booking + mismatched guest count + brand-new email + prepaid card = party/fraud pattern'},
+ {name:'Michael Ross', detail:'Airbnb &middot; 6 nights &middot; ID uploaded but expired &middot; otherwise clean',
+  risk:'MEDIUM', score:41, action:'One extra step requested — re-upload valid ID before check-in', save:0,
+  trace:'single flag: expired ID &middot; everything else normal &middot; frictionless once resolved'},
+];
+
+async function screenAll(){
+  $('screenBtn').disabled=true; $('screenBtn').textContent='Screening...';
+  const wrap=$('bookings'); wrap.innerHTML='';
+  for(const b of BOOKINGS){
+    const rc = b.risk==='HIGH'?'border-rose-500/40 bg-rose-500/5':b.risk==='MEDIUM'?'border-amber-500/30 bg-amber-500/5':'border-emerald-500/25 bg-emerald-500/5';
+    const badge = b.risk==='HIGH'?'bg-rose-500/15 text-rose-400':b.risk==='MEDIUM'?'bg-amber-500/15 text-amber-400':'bg-emerald-500/15 text-emerald-400';
+    const d=document.createElement('div');
+    d.className='rounded-lg border '+rc+' p-3';
+    d.innerHTML=`<div class="flex flex-wrap items-center justify-between gap-2">
+        <p class="text-sm font-semibold text-zinc-100">${b.name}</p>
+        <span class="rounded-full px-2 py-0.5 font-mono text-[10px] ${badge}">risk ${b.score}/100 &middot; ${b.risk}</span>
+      </div>
+      <p class="mt-1 font-mono text-[11px] text-zinc-500">${b.detail}</p>
+      <p class="mt-2 font-mono text-[11px] text-zinc-600">&#9656; ${b.trace}</p>
+      <p class="mt-1.5 text-xs font-medium ${b.risk==='HIGH'?'text-rose-300':b.risk==='MEDIUM'?'text-amber-300':'text-emerald-300'}">${b.action}</p>`;
+    wrap.appendChild(d);
+    if(b.save){ saved+=b.save; $('saved').textContent='&#8362;'+saved.toLocaleString(); }
+    await sleep(900);
+  }
+  $('screenBtn').textContent='Screening complete';
+}
+
+async function scanDamage(){
+  $('scanBtn').disabled=true; $('scanBtn').textContent='Analyzing...';
+  const out=$('damageout');
+  const findings=[
+   {icon:'&#10003;', cls:'text-emerald-400', txt:'Living room — matches baseline, no issues'},
+   {icon:'&#9888;', cls:'text-amber-400', txt:'Kitchen — wine stain on countertop not in baseline photo &middot; cleaning flag raised'},
+   {icon:'&#10007;', cls:'text-rose-400', txt:'Bedroom — lamp missing vs baseline &middot; damage/missing-item claim drafted (~&#8362;280) with photo evidence'},
+   {icon:'&#10003;', cls:'text-emerald-400', txt:'Bathroom — clean, no damage'},
+  ];
+  for(const f of findings){
+    const d=document.createElement('div');
+    d.className='flex items-start gap-2 rounded-md border border-zinc-800 bg-zinc-950 px-3 py-2 font-mono text-[12px]';
+    d.innerHTML=`<span class="${f.cls}">${f.icon}</span><span class="text-zinc-400">${f.txt}</span>`;
+    out.appendChild(d); await sleep(800);
+  }
+  const d=document.createElement('div');
+  d.className='rounded-lg border border-emerald-500/25 bg-emerald-500/5 p-3 text-sm text-zinc-300';
+  d.innerHTML='Two issues caught within minutes of checkout — while there\'s still time to bill the responsible guest with timestamped photo evidence, instead of discovering it after the next guest arrives and eating the loss. <b class="text-emerald-400">&#8362;280 damage claim recovered.</b>';
+  out.appendChild(d);
+  saved+=280; $('saved').textContent='&#8362;'+saved.toLocaleString();
+  $('scanBtn').textContent='Analysis complete';
+}
+
+screenAll._init = renderInit();
+function renderInit(){
+  const wrap=$('bookings');
+  wrap.innerHTML=BOOKINGS.map(b=>`<div class="rounded-lg border border-zinc-800 bg-zinc-950 p-3">
+      <p class="text-sm font-semibold text-zinc-300">${b.name}</p>
+      <p class="mt-1 font-mono text-[11px] text-zinc-600">${b.detail}</p>
+      <p class="mt-1 font-mono text-[10px] text-zinc-700">awaiting screening...</p></div>`).join('');
+}
+</script>
+</body>
+</html>
