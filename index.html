@@ -18,6 +18,7 @@ tailwind.config = { theme: { extend: {
   .reveal { opacity:0; transform:translateY(18px); transition:opacity .7s ease, transform .7s ease; }
   .reveal.in { opacity:1; transform:none; }
   @media (prefers-reduced-motion: reduce) { .reveal { opacity:1; transform:none; transition:none; } }
+  .step-num { min-width:1.75rem; height:1.75rem; }
 </style>
 </head>
 <body class="font-display text-zinc-300 antialiased selection:bg-amber/30 selection:text-white">
@@ -29,14 +30,14 @@ tailwind.config = { theme: { extend: {
       <span class="font-semibold tracking-tight text-zinc-100">SaaS-Displacer <span class="text-amber">Labs</span></span>
     </div>
     <div class="hidden items-center gap-6 text-sm text-zinc-400 md:flex">
-      <a href="#agents" class="transition hover:text-zinc-100">The agents</a>
-      <a href="#how" class="transition hover:text-zinc-100">How it works</a>
+      <a href="#agent-1" class="transition hover:text-zinc-100">Sales</a>
+      <a href="#agent-2" class="transition hover:text-zinc-100">SEO</a>
+      <a href="#agent-3" class="transition hover:text-zinc-100">Re-booking</a>
       <a href="#audit" class="rounded-md bg-amber px-4 py-2 font-semibold text-ink transition hover:bg-amber-dim hover:text-zinc-100">Free audit</a>
     </div>
   </div>
 </nav>
 
-<!-- HERO -->
 <header class="relative overflow-hidden border-b border-line">
   <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(255,176,32,0.07),transparent_55%)]"></div>
   <div class="mx-auto max-w-6xl px-5 pb-16 pt-16 md:pt-24 text-center">
@@ -48,101 +49,161 @@ tailwind.config = { theme: { extend: {
       Three AI agents built to grow a short-term rental business: convert website visitors into direct bookings, keep every listing SEO-optimized and localized automatically, and bring past guests back at the exact moment they start planning.
     </p>
     <p class="mx-auto mt-3 max-w-2xl text-sm text-zinc-500">
-      Each one bypasses the 15–20% OTA commission on the bookings it wins — click any agent below to try a working demo.
+      Each one bypasses the 15-20% OTA commission on the bookings it wins. Read how each works below — or jump straight into a live demo.
     </p>
-    <div class="mt-8 flex flex-wrap justify-center gap-4">
-      <a href="#agents" class="rounded-md bg-amber px-6 py-3 font-semibold text-ink transition hover:-translate-y-0.5 hover:bg-amber-dim hover:text-zinc-100">Explore the agents</a>
-      <a href="#audit" class="rounded-md border border-line px-6 py-3 font-semibold text-zinc-300 transition hover:border-zinc-500">Book a free audit</a>
-    </div>
   </div>
 </header>
 
-<!-- AGENTS GRID -->
-<section id="agents" class="py-16">
+<section class="py-14">
   <div class="mx-auto max-w-6xl px-5">
-    <div class="reveal mb-10 text-center">
-      <h2 class="text-3xl font-bold tracking-tight text-zinc-100">Three agents, three live demos</h2>
-      <p class="mt-3 text-zinc-400">Every card links to an interactive demo — no login, just click and try it.</p>
-    </div>
     <div class="grid gap-5 md:grid-cols-3">
-
-      <!-- Agent 1 -->
-      <a href="demo-sales-agent.html" class="reveal group flex flex-col rounded-xl border border-line bg-panel p-6 transition hover:border-amber/40 hover:-translate-y-1">
+      <a href="#agent-1" class="reveal group flex flex-col rounded-xl border border-line bg-panel p-6 transition hover:border-amber/40 hover:-translate-y-1">
         <p class="font-mono text-xs uppercase tracking-widest text-sky">Agent 01</p>
         <h3 class="mt-2 text-xl font-semibold text-zinc-100">Direct-Booking Sales Agent</h3>
-        <p class="mt-2 flex-1 text-sm leading-relaxed text-zinc-400">Multilingual chat on your site &amp; WhatsApp — answers granular questions, generates a custom quote + payment link on the spot, and recovers abandoned quotes with 2h/24h follow-ups.</p>
-        <div class="mt-4 rounded-lg border border-ok/20 bg-ok/5 p-3 font-mono text-xs text-zinc-400">
-          Converts <b class="text-ok">15–25% more</b> visitors · bypasses 15–20% OTA fees
-        </div>
-        <span class="mt-4 inline-flex items-center gap-1 font-mono text-sm text-amber transition group-hover:gap-2">Try the demo →</span>
+        <p class="mt-2 flex-1 text-sm leading-relaxed text-zinc-400">Multilingual chat that turns website visitors into direct bookings, quote and payment link included.</p>
+        <div class="mt-4 rounded-lg border border-ok/20 bg-ok/5 p-3 font-mono text-xs text-zinc-400"><b class="text-ok">15-25% more</b> visitors converted</div>
+        <span class="mt-4 inline-flex items-center gap-1 font-mono text-sm text-amber transition group-hover:gap-2">Read how &darr;</span>
       </a>
-
-      <!-- Agent 2 -->
-      <a href="demo-listing-seo.html" class="reveal group flex flex-col rounded-xl border border-line bg-panel p-6 transition hover:border-amber/40 hover:-translate-y-1">
+      <a href="#agent-2" class="reveal group flex flex-col rounded-xl border border-line bg-panel p-6 transition hover:border-amber/40 hover:-translate-y-1">
         <p class="font-mono text-xs uppercase tracking-widest text-sky">Agent 02</p>
         <h3 class="mt-2 text-xl font-semibold text-zinc-100">Listing &amp; SEO Agent</h3>
-        <p class="mt-2 flex-1 text-sm leading-relaxed text-zinc-400">Turns photo uploads into optimized, persona-tuned listing copy · injects seasonal &amp; event keywords ahead of demand · localizes natively in every language · syncs across Airbnb, Booking, and your site.</p>
-        <div class="mt-4 rounded-lg border border-ok/20 bg-ok/5 p-3 font-mono text-xs text-zinc-400">
-          <b class="text-ok">10+ hrs/listing/mo</b> saved · 20–30% organic traffic lift
-        </div>
-        <span class="mt-4 inline-flex items-center gap-1 font-mono text-sm text-amber transition group-hover:gap-2">Try the demo →</span>
+        <p class="mt-2 flex-1 text-sm leading-relaxed text-zinc-400">Turns photos into optimized, localized, season-aware listing copy across every channel.</p>
+        <div class="mt-4 rounded-lg border border-ok/20 bg-ok/5 p-3 font-mono text-xs text-zinc-400"><b class="text-ok">10+ hrs/listing/mo</b> saved</div>
+        <span class="mt-4 inline-flex items-center gap-1 font-mono text-sm text-amber transition group-hover:gap-2">Read how &darr;</span>
       </a>
-
-      <!-- Agent 3 -->
-      <a href="demo-ltv-rebooking.html" class="reveal group flex flex-col rounded-xl border border-line bg-panel p-6 transition hover:border-amber/40 hover:-translate-y-1">
+      <a href="#agent-3" class="reveal group flex flex-col rounded-xl border border-line bg-panel p-6 transition hover:border-amber/40 hover:-translate-y-1">
         <p class="font-mono text-xs uppercase tracking-widest text-sky">Agent 03</p>
         <h3 class="mt-2 text-xl font-semibold text-zinc-100">Predictive Re-Booking Agent</h3>
-        <p class="mt-2 flex-1 text-sm leading-relaxed text-zinc-400">Segments past guests by origin, group, and season · predicts each one's booking-planning window · fires personalized VIP offers at the exact right moment, straight to direct booking.</p>
-        <div class="mt-4 rounded-lg border border-ok/20 bg-ok/5 p-3 font-mono text-xs text-zinc-400">
-          <b class="text-ok">30–40% more</b> repeat direct bookings · CAC near zero
-        </div>
-        <span class="mt-4 inline-flex items-center gap-1 font-mono text-sm text-amber transition group-hover:gap-2">Try the demo →</span>
+        <p class="mt-2 flex-1 text-sm leading-relaxed text-zinc-400">Brings past guests back with personalized offers timed to when they actually start planning.</p>
+        <div class="mt-4 rounded-lg border border-ok/20 bg-ok/5 p-3 font-mono text-xs text-zinc-400"><b class="text-ok">30-40% more</b> repeat direct bookings</div>
+        <span class="mt-4 inline-flex items-center gap-1 font-mono text-sm text-amber transition group-hover:gap-2">Read how &darr;</span>
       </a>
     </div>
+  </div>
+</section>
 
-    <!-- secondary: earlier revenue set + ops -->
-    <div class="reveal mt-8 rounded-xl border border-line bg-panel/50 p-6">
-      <p class="mb-3 font-mono text-xs uppercase tracking-widest text-zinc-500">More demos</p>
-      <div class="flex flex-wrap gap-3 text-sm">
-        <a href="revenue-landing.html" class="rounded-md border border-line px-4 py-2 text-zinc-300 transition hover:border-amber/40 hover:text-amber">Revenue agents overview →</a>
-        <a href="demo-inquiry.html" class="rounded-md border border-line px-4 py-2 text-zinc-300 transition hover:border-amber/40 hover:text-amber">Instant inquiry demo →</a>
-        <a href="demo-upsell.html" class="rounded-md border border-line px-4 py-2 text-zinc-300 transition hover:border-amber/40 hover:text-amber">Upsell demo →</a>
-        <a href="demo-rebook.html" class="rounded-md border border-line px-4 py-2 text-zinc-300 transition hover:border-amber/40 hover:text-amber">Re-booking demo →</a>
-        <a href="rentops-mvp.html" class="rounded-md border border-line px-4 py-2 text-zinc-300 transition hover:border-amber/40 hover:text-amber">Operations console →</a>
+<section id="agent-1" class="border-t border-line py-16">
+  <div class="mx-auto max-w-5xl px-5">
+    <div class="reveal mb-8">
+      <p class="font-mono text-xs uppercase tracking-widest text-sky">Agent 01 · speed-to-booking</p>
+      <h2 class="mt-2 text-3xl font-bold tracking-tight text-zinc-100">Direct-Booking Conversational Sales Agent</h2>
+      <p class="mt-4 max-w-3xl leading-relaxed text-zinc-400">Most high-intent visitors browse your direct site but leave when they hit a quick question — elevator access, distance to Gordon Beach, whether it works for a family — or because they want a custom quote for a multi-week stay. By the time a human replies hours later, they've booked on Airbnb. This agent closes that gap in seconds, in the visitor's own language.</p>
+    </div>
+    <div class="reveal mb-8 grid gap-4 md:grid-cols-2">
+      <div class="flex gap-4 rounded-xl border border-line bg-panel p-5"><span class="step-num flex items-center justify-center rounded-full bg-amber/15 font-mono text-sm font-semibold text-amber">1</span><div><h3 class="font-semibold text-zinc-100">Instant multilingual answers</h3><p class="mt-1 text-sm leading-relaxed text-zinc-400">Engages visitors in English, French, Hebrew, German, or Russian — answering granular apartment questions from your live portfolio data, not canned FAQs.</p></div></div>
+      <div class="flex gap-4 rounded-xl border border-line bg-panel p-5"><span class="step-num flex items-center justify-center rounded-full bg-amber/15 font-mono text-sm font-semibold text-amber">2</span><div><h3 class="font-semibold text-zinc-100">Smart quote generator</h3><p class="mt-1 text-sm leading-relaxed text-zinc-400">Builds a custom, shareable quote page or WhatsApp payment link on the spot — tailored dates, bundled perks (free airport pickup, late checkout), and a direct-booking discount.</p></div></div>
+      <div class="flex gap-4 rounded-xl border border-line bg-panel p-5"><span class="step-num flex items-center justify-center rounded-full bg-amber/15 font-mono text-sm font-semibold text-amber">3</span><div><h3 class="font-semibold text-zinc-100">Abandoned-cart recovery</h3><p class="mt-1 text-sm leading-relaxed text-zinc-400">If a visitor gets a quote but doesn't check out, the agent follows up on WhatsApp or email at 2 hours and 24 hours with a targeted incentive.</p></div></div>
+      <div class="flex gap-4 rounded-xl border border-line bg-panel p-5"><span class="step-num flex items-center justify-center rounded-full bg-amber/15 font-mono text-sm font-semibold text-amber">4</span><div><h3 class="font-semibold text-zinc-100">Human handoff</h3><p class="mt-1 text-sm leading-relaxed text-zinc-400">Complex or non-standard requests escalate to your team instantly — the agent knows the edge of what it should answer.</p></div></div>
+    </div>
+    <div class="reveal rounded-xl border border-line bg-panel/60 p-6">
+      <p class="mb-4 font-mono text-xs uppercase tracking-widest text-amber">Worked example · a Tuesday, 23:41</p>
+      <div class="space-y-3 font-mono text-[12.5px] leading-relaxed">
+        <div class="rounded-lg border border-zinc-800 bg-ink p-3"><span class="text-sky-400">Visitor (French) &rarr;</span> <span class="text-zinc-300">"Rothschild 33 est proche de la plage Gordon ? Ascenseur ? Famille de 4, 2 semaines en aout."</span></div>
+        <div class="pl-4 text-zinc-600">&#9656; agent detects French · pulls Rothschild 33: 12-min walk to Gordon, elevator (floor 3), sleeps 4, free crib</div>
+        <div class="rounded-lg border border-emerald-500/25 bg-emerald-500/5 p-3"><span class="text-emerald-400">Agent (French) &rarr;</span> <span class="text-zinc-200">Answers both questions, then offers a 14-night direct quote at a better-than-platform rate.</span></div>
+        <div class="pl-4 text-zinc-600">&#9656; visitor says yes &rarr; generates quote QT-4471 + Stripe link</div>
+        <div class="rounded-lg border border-amber-500/25 bg-amber-500/5 p-3 text-zinc-300">&#128196; <b>Quote:</b> 14 nights · &#8362;560/night direct (vs &#8362;665 platform) · free airport pickup · guest saves &#8362;1,470 · link holds dates 48h</div>
+        <div class="pl-4 text-zinc-600">&#9656; if unpaid &rarr; auto WhatsApp at +2h ("still held, want a free late checkout?") &rarr; visitor returns &amp; books</div>
+      </div>
+      <div class="mt-5 flex flex-wrap items-center justify-between gap-4 rounded-lg border border-ok/25 bg-ok/5 p-4">
+        <div class="font-mono text-sm text-zinc-300"><span class="text-xs uppercase tracking-widest text-ok">Result</span><br/>Direct booking &#8362;7,840 · <b class="text-ok">~&#8362;1,176 OTA commission avoided</b> on this one stay</div>
+        <a href="demo-sales-agent.html" class="rounded-md bg-amber px-5 py-2.5 font-semibold text-ink transition hover:bg-amber-dim hover:text-zinc-100">Try the live demo &rarr;</a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- HOW IT WORKS -->
-<section id="how" class="border-t border-line bg-panel/40 py-16">
+<section id="agent-2" class="border-t border-line bg-panel/40 py-16">
+  <div class="mx-auto max-w-5xl px-5">
+    <div class="reveal mb-8">
+      <p class="font-mono text-xs uppercase tracking-widest text-sky">Agent 02 · visibility</p>
+      <h2 class="mt-2 text-3xl font-bold tracking-tight text-zinc-100">Multi-Channel SEO &amp; Listing Optimization Agent</h2>
+      <p class="mt-4 max-w-3xl leading-relaxed text-zinc-400">To rank on search and OTAs, listings need constant updating — localized keywords, holiday-specific messaging, and copy adapted for different buyers (a digital nomad wants fast WiFi; a family wants a crib and an elevator). Doing that by hand across every channel, in every language, every season, is hours nobody has. This agent does it continuously.</p>
+    </div>
+    <div class="reveal mb-8 grid gap-4 md:grid-cols-2">
+      <div class="flex gap-4 rounded-xl border border-line bg-panel p-5"><span class="step-num flex items-center justify-center rounded-full bg-amber/15 font-mono text-sm font-semibold text-amber">1</span><div><h3 class="font-semibold text-zinc-100">Photo &rarr; copy</h3><p class="mt-1 text-sm leading-relaxed text-zinc-400">Vision models read your new photo uploads and specs, then write optimized headlines and descriptions highlighting proximity to Neve Tzedek, Rothschild, the Port.</p></div></div>
+      <div class="flex gap-4 rounded-xl border border-line bg-panel p-5"><span class="step-num flex items-center justify-center rounded-full bg-amber/15 font-mono text-sm font-semibold text-amber">2</span><div><h3 class="font-semibold text-zinc-100">Seasonal keyword injection</h3><p class="mt-1 text-sm leading-relaxed text-zinc-400">Updates copy across Airbnb, Booking, and your site to target demand surges — Rosh Hashanah, Pride Week, summer, tech-conference weeks — <i>before</i> the search spike, not after.</p></div></div>
+      <div class="flex gap-4 rounded-xl border border-line bg-panel p-5"><span class="step-num flex items-center justify-center rounded-full bg-amber/15 font-mono text-sm font-semibold text-amber">3</span><div><h3 class="font-semibold text-zinc-100">Native localization</h3><p class="mt-1 text-sm leading-relaxed text-zinc-400">Generates culturally natural translations — not robotic machine output — so a French or American guest reads copy tuned to their expectations.</p></div></div>
+      <div class="flex gap-4 rounded-xl border border-line bg-panel p-5"><span class="step-num flex items-center justify-center rounded-full bg-amber/15 font-mono text-sm font-semibold text-amber">4</span><div><h3 class="font-semibold text-zinc-100">Persona targeting</h3><p class="mt-1 text-sm leading-relaxed text-zinc-400">Writes distinct versions for digital nomads, big families, and luxury couples — same apartment, three angles, each ranking for different high-intent searches.</p></div></div>
+    </div>
+    <div class="reveal rounded-xl border border-line bg-ink/60 p-6">
+      <p class="mb-4 font-mono text-xs uppercase tracking-widest text-amber">Worked example · new apartment onboarded</p>
+      <div class="space-y-3 font-mono text-[12.5px] leading-relaxed">
+        <div class="rounded-lg border border-zinc-800 bg-panel p-3 text-zinc-400">&#128444;&#65039; <b class="text-zinc-200">Input:</b> 3 photos + specs for Neve Tzedek · Shabazi 44 · 2BR, balcony, sea view, 6-min walk to Rothschild</div>
+        <div class="pl-4 text-zinc-600">&#9656; vision detects: sea-view balcony, open-plan living, exposed stone wall · persona = "digital nomad" · season = "summer"</div>
+        <div class="rounded-lg border border-amber-500/25 bg-amber-500/5 p-3"><span class="text-amber-400">Headline &rarr;</span> <span class="text-zinc-200">"Fast-WiFi Neve Tzedek 2BR · Dedicated Workspace, 6 Min to Rothschild"</span></div>
+        <div class="rounded-lg border border-zinc-800 bg-panel p-3 text-zinc-400"><span class="text-sky-400">Keywords injected &rarr;</span> digital nomad tel aviv · neve tzedek apartment · fast wifi long stay · summer tel aviv beach</div>
+        <div class="grid gap-2 md:grid-cols-2">
+          <div class="rounded-lg border border-zinc-800 bg-panel p-3 text-zinc-400"><span class="text-sky-400">&#127467;&#127479; FR (native) &rarr;</span> "Au coeur de Neve Tzedek, a deux pas de Rothschild et de la mer..."</div>
+          <div class="rounded-lg border border-zinc-800 bg-panel p-3 text-zinc-400" dir="rtl"><span class="text-sky-400">&#127470;&#127473; HE &rarr;</span> "&#1489;&#1500;&#1489; &#1504;&#1493;&#1493;&#1492; &#1510;&#1491;&#1511; — &#1491;&#1497;&#1512;&#1514; 2 &#1495;&#1491;&#1512;&#1497;&#1501; &#1506;&#1501; &#1502;&#1512;&#1508;&#1505;&#1514; &#1504;&#1493;&#1507; &#1500;&#1497;&#1501;..."</div>
+        </div>
+        <div class="pl-4 text-zinc-600">&#9656; synced: Airbnb &#10003; · Booking.com &#10003; · seanrent.com &#10003; — consistent copy, per-channel format</div>
+      </div>
+      <div class="mt-5 flex flex-wrap items-center justify-between gap-4 rounded-lg border border-ok/25 bg-ok/5 p-4">
+        <div class="font-mono text-sm text-zinc-300"><span class="text-xs uppercase tracking-widest text-ok">Result</span><br/>~10 hrs/listing/month of content work removed · <b class="text-ok">20-30% lift</b> in organic + OTA search visibility</div>
+        <a href="demo-listing-seo.html" class="rounded-md bg-amber px-5 py-2.5 font-semibold text-ink transition hover:bg-amber-dim hover:text-zinc-100">Try the live demo &rarr;</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="agent-3" class="border-t border-line py-16">
+  <div class="mx-auto max-w-5xl px-5">
+    <div class="reveal mb-8">
+      <p class="font-mono text-xs uppercase tracking-widest text-sky">Agent 03 · the second booking</p>
+      <h2 class="mt-2 text-3xl font-bold tracking-tight text-zinc-100">Predictive LTV &amp; Re-Booking Campaign Agent</h2>
+      <p class="mt-4 max-w-3xl leading-relaxed text-zinc-400">Past guests are your cheapest high-margin revenue — yet most operators send generic email blasts that get ignored. This agent tracks stay history to run micro-targeted direct-booking campaigns that arrive exactly when each guest starts planning their next trip.</p>
+    </div>
+    <div class="reveal mb-8 grid gap-4 md:grid-cols-2">
+      <div class="flex gap-4 rounded-xl border border-line bg-panel p-5"><span class="step-num flex items-center justify-center rounded-full bg-amber/15 font-mono text-sm font-semibold text-amber">1</span><div><h3 class="font-semibold text-zinc-100">Behavioral segmentation</h3><p class="mt-1 text-sm leading-relaxed text-zinc-400">Groups past guests by origin country, stay frequency, group type (families vs couples), and season of visit — the axes that predict how and when they rebook.</p></div></div>
+      <div class="flex gap-4 rounded-xl border border-line bg-panel p-5"><span class="step-num flex items-center justify-center rounded-full bg-amber/15 font-mono text-sm font-semibold text-amber">2</span><div><h3 class="font-semibold text-zinc-100">Predictive timing</h3><p class="mt-1 text-sm leading-relaxed text-zinc-400">Learns each segment's travel cycle — European families book summer Tel Aviv trips ~120 days ahead — and fires outreach at the exact window they begin planning.</p></div></div>
+      <div class="flex gap-4 rounded-xl border border-line bg-panel p-5"><span class="step-num flex items-center justify-center rounded-full bg-amber/15 font-mono text-sm font-semibold text-amber">3</span><div><h3 class="font-semibold text-zinc-100">VIP loyalty offers</h3><p class="mt-1 text-sm leading-relaxed text-zinc-400">Returning guests get exclusive direct rates, free upgrades, or priority early check-in — bypassing third-party channels entirely on the highest-margin bookings you have.</p></div></div>
+      <div class="flex gap-4 rounded-xl border border-line bg-panel p-5"><span class="step-num flex items-center justify-center rounded-full bg-amber/15 font-mono text-sm font-semibold text-amber">4</span><div><h3 class="font-semibold text-zinc-100">Human touch where it counts</h3><p class="mt-1 text-sm leading-relaxed text-zinc-400">Your highest-LTV guests (3+ stays) get flagged for a personal note rather than automation — the agent drafts it and times it; you send it.</p></div></div>
+    </div>
+    <div class="reveal rounded-xl border border-line bg-panel/60 p-6">
+      <p class="mb-4 font-mono text-xs uppercase tracking-widest text-amber">Worked example · one segment fires</p>
+      <div class="space-y-3 font-mono text-[12.5px] leading-relaxed">
+        <div class="rounded-lg border border-zinc-800 bg-ink p-3 text-zinc-400">&#128101; <b class="text-zinc-200">Segment:</b> European families · 412 guests · historically book ~120 days ahead of summer</div>
+        <div class="pl-4 text-zinc-600">&#9656; it's late July &rarr; the exact planning window for next summer &rarr; campaign triggers now, before they default to a hotel</div>
+        <div class="rounded-lg border border-emerald-500/25 bg-emerald-500/5 p-3 text-zinc-200">&#9993;&#65039; <span class="text-emerald-400">Drafted (French) &rarr;</span> "Vous avez adore Dizengoff 210 l'ete dernier — et c'est le moment de reserver l'ete prochain. Tarif fidele : &#8362;610/nuit en direct (au lieu de &#8362;695), lit bebe inclus, check-in prioritaire. Je bloque vos dates ?"</div>
+        <div class="pl-4 text-zinc-600">&#9656; fires 120 days before their historical travel window · WhatsApp + email · opt-in only, unsubscribe on every message</div>
+      </div>
+      <div class="mt-5 flex flex-wrap items-center justify-between gap-4 rounded-lg border border-ok/25 bg-ok/5 p-4">
+        <div class="font-mono text-sm text-zinc-300"><span class="text-xs uppercase tracking-widest text-ok">Result</span><br/><b class="text-ok">30-40% more</b> repeat direct bookings vs generic blasts · acquisition cost &asymp; the tokens to draft the message</div>
+        <a href="demo-ltv-rebooking.html" class="rounded-md bg-amber px-5 py-2.5 font-semibold text-ink transition hover:bg-amber-dim hover:text-zinc-100">Try the live demo &rarr;</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="border-t border-line bg-panel/40 py-14">
+  <div class="mx-auto max-w-6xl px-5">
+    <p class="mb-3 font-mono text-xs uppercase tracking-widest text-zinc-500">More demos &amp; tools</p>
+    <div class="flex flex-wrap gap-3 text-sm">
+      <a href="revenue-landing.html" class="rounded-md border border-line px-4 py-2 text-zinc-300 transition hover:border-amber/40 hover:text-amber">Revenue agents overview &rarr;</a>
+      <a href="demo-inquiry.html" class="rounded-md border border-line px-4 py-2 text-zinc-300 transition hover:border-amber/40 hover:text-amber">Instant inquiry demo &rarr;</a>
+      <a href="demo-upsell.html" class="rounded-md border border-line px-4 py-2 text-zinc-300 transition hover:border-amber/40 hover:text-amber">Upsell demo &rarr;</a>
+      <a href="demo-rebook.html" class="rounded-md border border-line px-4 py-2 text-zinc-300 transition hover:border-amber/40 hover:text-amber">Re-booking demo &rarr;</a>
+      <a href="rentops-mvp.html" class="rounded-md border border-line px-4 py-2 text-zinc-300 transition hover:border-amber/40 hover:text-amber">Operations console &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<section class="border-t border-line py-16">
   <div class="mx-auto max-w-6xl px-5">
     <h2 class="reveal mb-10 text-center text-3xl font-bold tracking-tight text-zinc-100">From free audit to filled calendar</h2>
     <div class="grid gap-6 md:grid-cols-3">
-      <div class="reveal rounded-xl border border-line bg-panel p-6">
-        <p class="font-mono text-xs uppercase tracking-widest text-amber">Step 1 · Audit</p>
-        <h3 class="mt-2 text-lg font-semibold text-zinc-100">We map your booking funnel</h3>
-        <p class="mt-2 text-sm leading-relaxed text-zinc-400">A free session on your current mix — direct vs OTA, where inquiries leak, what your past-guest list looks like. You get a written plan either way.</p>
-      </div>
-      <div class="reveal rounded-xl border border-line bg-panel p-6">
-        <p class="font-mono text-xs uppercase tracking-widest text-amber">Step 2 · Deploy</p>
-        <h3 class="mt-2 text-lg font-semibold text-zinc-100">Agents on your data</h3>
-        <p class="mt-2 text-sm leading-relaxed text-zinc-400">We wire the highest-payoff agent first — usually the sales agent or the re-booking agent — to your real portfolio and guest list. Flat fee, quoted upfront.</p>
-      </div>
-      <div class="reveal rounded-xl border border-line bg-panel p-6">
-        <p class="font-mono text-xs uppercase tracking-widest text-amber">Step 3 · Grow</p>
-        <h3 class="mt-2 text-lg font-semibold text-zinc-100">You approve, they run</h3>
-        <p class="mt-2 text-sm leading-relaxed text-zinc-400">Every guest-facing message is yours to approve until the numbers earn autonomy. You watch direct bookings climb and OTA commission fall.</p>
-      </div>
+      <div class="reveal rounded-xl border border-line bg-panel p-6"><p class="font-mono text-xs uppercase tracking-widest text-amber">Step 1 · Audit</p><h3 class="mt-2 text-lg font-semibold text-zinc-100">We map your booking funnel</h3><p class="mt-2 text-sm leading-relaxed text-zinc-400">A free session on your current mix — direct vs OTA, where inquiries leak, what your past-guest list looks like. You get a written plan either way.</p></div>
+      <div class="reveal rounded-xl border border-line bg-panel p-6"><p class="font-mono text-xs uppercase tracking-widest text-amber">Step 2 · Deploy</p><h3 class="mt-2 text-lg font-semibold text-zinc-100">Agents on your data</h3><p class="mt-2 text-sm leading-relaxed text-zinc-400">We wire the highest-payoff agent first — usually the sales agent or the re-booking agent — to your real portfolio and guest list. Flat fee, quoted upfront.</p></div>
+      <div class="reveal rounded-xl border border-line bg-panel p-6"><p class="font-mono text-xs uppercase tracking-widest text-amber">Step 3 · Grow</p><h3 class="mt-2 text-lg font-semibold text-zinc-100">You approve, they run</h3><p class="mt-2 text-sm leading-relaxed text-zinc-400">Every guest-facing message is yours to approve until the numbers earn autonomy. You watch direct bookings climb and OTA commission fall.</p></div>
     </div>
   </div>
 </section>
 
-<!-- HONEST CTA -->
-<section id="audit" class="border-t border-line py-16">
+<section id="audit" class="border-t border-line bg-panel py-16">
   <div class="mx-auto max-w-3xl px-5 text-center">
     <h2 class="text-3xl font-bold tracking-tight text-zinc-100">The demos use modeled numbers. Your audit uses yours.</h2>
-    <p class="mx-auto mt-4 max-w-xl leading-relaxed text-zinc-400">Every figure in these demos is an industry-benchmark model, not a promise. Book the free audit and we'll run the real math on your actual inquiry volume, guest list, and rates — and tell you honestly which agent pays off first, and which isn't worth it yet.</p>
+    <p class="mx-auto mt-4 max-w-xl leading-relaxed text-zinc-400">Every figure in these demos and examples is an industry-benchmark model, not a promise. Book the free audit and we'll run the real math on your actual inquiry volume, guest list, and rates — and tell you honestly which agent pays off first, and which isn't worth it yet.</p>
     <a href="mailto:hello@yourdomain.com?subject=Free%20marketing%20audit%20request" class="mt-8 inline-block rounded-md bg-amber px-6 py-3 font-semibold text-ink transition hover:-translate-y-0.5 hover:bg-amber-dim hover:text-zinc-100">Book the free audit</a>
     <p class="mt-4 font-mono text-xs text-zinc-600">Replace hello@yourdomain.com with your real inbox before going live.</p>
   </div>
@@ -150,7 +211,7 @@ tailwind.config = { theme: { extend: {
 
 <footer class="border-t border-line py-10">
   <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-5 text-xs text-zinc-600 md:flex-row">
-    <span>© 2026 SaaS-Displacer Labs · AI marketing agents for rental managers</span>
+    <span>(c) 2026 SaaS-Displacer Labs · AI marketing agents for rental managers</span>
     <span class="font-mono">demos: <a href="demo-sales-agent.html" class="text-amber">sales</a> · <a href="demo-listing-seo.html" class="text-amber">SEO</a> · <a href="demo-ltv-rebooking.html" class="text-amber">re-booking</a></span>
   </div>
 </footer>
