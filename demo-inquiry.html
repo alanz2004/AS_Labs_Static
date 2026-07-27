@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Demo — Instant Inquiry Agent</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script>tailwind.config={theme:{extend:{fontFamily:{display:['"Space Grotesk"','sans-serif'],mono:['"JetBrains Mono"','monospace']}}}};</script>
+<style>
+  body{background:#09090b}
+  .caret::after{content:'▌';color:#f59e0b;animation:blink 1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+</style>
+</head>
+<body class="min-h-screen font-display text-zinc-200 px-4 py-8 md:px-10">
+<div class="mx-auto max-w-4xl">
+<header class="mb-6 flex flex-wrap items-end justify-between gap-3">
+  <div>
+    <a href="revenue-landing.html" class="font-mono text-xs text-zinc-500 hover:text-amber-400">← revenue agents</a>
+    <h1 class="mt-1 text-xl font-semibold tracking-tight text-zinc-100">Instant Inquiry Agent <span class="text-amber-400">· live demo</span></h1>
+    <p class="mt-1 text-sm text-zinc-500">A direct-site inquiry at 23:41 — watch what happens when nobody's awake.</p>
+  </div>
+  <div class="text-right font-mono text-xs text-zinc-500">
+    <p>Commission kept this session</p>
+    <p class="text-2xl font-semibold text-emerald-400" id="saved">₪0</p>
+  </div>
+</header>
+
+<div class="grid gap-4 md:grid-cols-[1fr,300px]">
+  <!-- Chat -->
+  <div class="rounded-xl border border-zinc-800 bg-zinc-900/60">
+    <div class="flex items-center justify-between border-b border-zinc-800 px-4 py-3">
+      <p class="text-xs font-medium uppercase tracking-widest text-zinc-500">seanrent.com · live chat</p>
+      <span class="font-mono text-[10px] text-zinc-600" id="clock">23:41</span>
+    </div>
+    <div id="chat" class="min-h-[320px] space-y-3 p-4"></div>
+    <div class="border-t border-zinc-800 p-3">
+      <div class="flex flex-wrap gap-2" id="choices">
+        <button onclick="start()" id="startBtn" class="rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-zinc-950 transition hover:bg-amber-400">▶ Guest sends an inquiry</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Agent trace -->
+  <div class="rounded-xl border border-zinc-800 bg-zinc-900/60 p-4">
+    <p class="mb-2 text-xs font-medium uppercase tracking-widest text-zinc-500">What the agent did</p>
+    <div id="trace" class="space-y-1.5 font-mono text-[11.5px] leading-relaxed text-zinc-500">
+      <p class="text-zinc-600">— waiting for inquiry —</p>
+    </div>
+    <div class="mt-4 border-t border-zinc-800 pt-3 font-mono text-[11px] text-zinc-500">
+      <p class="text-zinc-600 uppercase text-[10px] tracking-widest mb-1">The comparison</p>
+      <p>Human team reply: <span class="text-rose-400">next morning (~9h)</span></p>
+      <p>Agent reply: <span class="text-emerald-400" id="rt">—</span></p>
+      <p class="mt-2 text-zinc-600">Every hour of delay is a guest opening the Airbnb app instead — where the same booking costs the manager ~15% commission.</p>
+    </div>
+  </div>
+</div>
+
+<p class="mt-4 rounded-lg border border-zinc-800 bg-zinc-900/40 p-3 text-xs text-zinc-500">Honesty line built into the product: the agent quotes only from live unit/rate records — if a needed fact is missing it escalates to a human instead of guessing, and complex requests (disputes, cancellations, special cases) always go to your team.</p>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+let saved=0, step=0;
+
+function bubble(from, html){
+  const d=document.createElement('div');
+  const guest = from==='guest';
+  d.className = 'flex ' + (guest?'justify-start':'justify-end');
+  d.innerHTML = `<div class="max-w-[85%] rounded-xl border p-3 text-sm leading-relaxed ${guest?'border-zinc-800 bg-zinc-950 text-zinc-300':'border-emerald-500/25 bg-emerald-500/5 text-zinc-200'}">
+    <p class="mb-1 font-mono text-[10px] uppercase ${guest?'text-sky-400':'text-emerald-400'}">${guest?'guest · 23:41':'agent'}</p>${html}</div>`;
+  $('chat').appendChild(d); d.scrollIntoView({behavior:'smooth',block:'end'});
+  return d;
+}
+function trace(t){ const p=document.createElement('p'); p.innerHTML=t; $('trace').appendChild(p); }
+async function typeInto(el, text){
+  const span=el.querySelector('.stream'); span.classList.add('caret');
+  for(let i=0;i<text.length;i+=3){ span.textContent=text.slice(0,i+3); await sleep(14); }
+  span.textContent=text; span.classList.remove('caret');
+}
+function choices(list){
+  $('choices').innerHTML = list.map((c,i)=>`<button onclick="pick(${i})" class="rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-2 text-sm font-semibold text-amber-300 transition hover:bg-amber-500/20">${c.label}</button>`).join('');
+  window._choices=list;
+}
+function pick(i){ window._choices[i].fn(); }
+
+async function start(){
+  $('startBtn').remove();
+  $('trace').innerHTML='';
+  bubble('guest','Hi! Do you have a 2BR near the beach for Aug 14–17? We are 4 people.');
+  trace('<span class="text-amber-400">▸ parse_inquiry</span> dates=Aug 14–17 · pax=4 · pref=beach, 2BR');
+  await sleep(700);
+  trace('<span class="text-amber-400">▸ query_records</span> units: 2BR + availability Aug 14–17');
+  await sleep(700);
+  trace('<span class="text-emerald-400">✓</span> match: HaYarkon 156 · Apt 2 (2BR, sea view) — free');
+  trace('<span class="text-emerald-400">✓</span> rate: ₪665/night platform · ₪565 direct');
+  await sleep(500);
+  const b=bubble('agent','<span class="stream"></span>');
+  await typeInto(b, "Yes! HaYarkon 156 · Apt 2 — a 2BR with sea view, 4-minute walk to the beach — is available Aug 14–17.\n\nDirect price: ₪565/night (₪665 on the booking platforms), total ₪1,695 for 3 nights, no platform fees.\n\nWant me to hold it for 24 hours while you decide?");
+  $('rt').textContent='9 seconds';
+  trace('<span class="text-zinc-600">reply drafted & sent · 23:41:09</span>');
+  choices([
+    {label:'Guest: "Yes, hold it!"', fn: accept},
+    {label:'Guest: "Can we get late checkout?"', fn: lateq},
+  ]);
+}
+async function lateq(){
+  bubble('guest','Sounds good — is late checkout possible on the 17th?');
+  trace('<span class="text-amber-400">▸ query_records</span> Aug 17 next check-in: 19:00 → late checkout OK');
+  await sleep(600);
+  const b=bubble('agent','<span class="stream"></span>');
+  await typeInto(b,'Yes — checkout until 15:00 on Aug 17 is available for ₪150 (the apartment is free that afternoon). I can add it to the hold.');
+  choices([{label:'Guest: "Perfect, hold both"', fn: ()=>accept(150)}]);
+}
+async function accept(extra=0){
+  bubble('guest', extra? 'Perfect, hold both!' : 'Yes, hold it!');
+  trace('<span class="text-amber-400">▸ upsert_record</span> hold/HLD-2291 · HY156-2 · Aug 14–17'+(extra?' + late checkout':''));
+  await sleep(700);
+  trace('<span class="text-emerald-400">✓</span> hold created · payment link sent · team notified for morning review');
+  const b=bubble('agent','<span class="stream"></span>');
+  await typeInto(b,'Done — held for 24 hours under your name. I\'ve sent a secure payment link; complete it any time before tomorrow 23:41 and the dates are yours. Anything else, I\'m here all night.');
+  saved = 254 + extra; // 15% of 1695 ≈ ₪254 commission avoided + upsell
+  $('saved').textContent='₪'+saved;
+  trace(`<span class="text-emerald-400">✓ outcome:</span> direct booking ₪1,695${extra?' + ₪150 upsell':''} · OTA commission avoided ≈ ₪254`);
+  $('choices').innerHTML='<button onclick="location.reload()" class="rounded-lg border border-zinc-700 px-4 py-2 text-sm text-zinc-400 hover:border-zinc-500">↻ Run it again</button>';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RentOps Revenue Agents — Book More. Pay Less Commission.</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+tailwind.config = { theme: { extend: {
+  fontFamily: { display: ['"Space Grotesk"','sans-serif'], mono: ['"JetBrains Mono"','monospace'] },
+  colors: { ink:'#0A0B0E', panel:'#12141A', line:'#22252E', amber:{DEFAULT:'#FFB020', dim:'#B37A12'}, ok:'#34D399', bad:'#F87171', sky:'#38BDF8' },
+}}};
+</script>
+<style>
+  body { background:#0A0B0E; }
+  .reveal { opacity:0; transform:translateY(18px); transition:opacity .7s ease, transform .7s ease; }
+  .reveal.in { opacity:1; transform:none; }
+  @media (prefers-reduced-motion: reduce) { .reveal { opacity:1; transform:none; transition:none; } }
+</style>
+</head>
+<body class="font-display text-zinc-300 antialiased selection:bg-amber/30 selection:text-white">
+
+<nav class="sticky top-0 z-40 border-b border-line bg-ink/85 backdrop-blur">
+  <div class="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
+    <div class="flex items-center gap-2">
+      <span class="inline-block h-2.5 w-2.5 rounded-sm bg-amber"></span>
+      <span class="font-semibold tracking-tight text-zinc-100">RentOps <span class="text-amber">Revenue Agents</span></span>
+    </div>
+    <div class="hidden items-center gap-6 text-sm text-zinc-400 md:flex">
+      <a href="#a1" class="transition hover:text-zinc-100">Instant replies</a>
+      <a href="#a2" class="transition hover:text-zinc-100">Upsells</a>
+      <a href="#a3" class="transition hover:text-zinc-100">Repeat guests</a>
+      <a href="#contact" class="rounded-md bg-amber px-4 py-2 font-semibold text-ink transition hover:bg-amber-dim hover:text-zinc-100">Talk to us</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="relative overflow-hidden border-b border-line">
+  <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(255,176,32,0.07),transparent_55%)]"></div>
+  <div class="mx-auto max-w-6xl px-5 pb-16 pt-16 md:pt-24 text-center">
+    <p class="mb-4 inline-block rounded-full border border-line bg-panel px-3 py-1 font-mono text-xs tracking-wider text-amber">FOR RENTAL MANAGEMENT COMPANIES</p>
+    <h1 class="mx-auto max-w-3xl text-4xl font-bold leading-tight tracking-tight text-zinc-100 md:text-5xl">
+      Your operations are covered.<br /><span class="text-amber">Now let agents grow the revenue.</span>
+    </h1>
+    <p class="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-zinc-400">
+      Three AI agents that make a rental manager money instead of just saving time: answer every inquiry in seconds, sell the upgrade at the right moment, and bring last year's guests back — direct, without the 15–18% OTA commission.
+    </p>
+    <p class="mx-auto mt-3 max-w-2xl text-sm text-zinc-500">
+      Industry reality in 2026: most operators get less than a quarter of bookings direct, and the follow-through — email, loyalty, return-guest campaigns — is the most underused lever in the business. These three agents are that follow-through, automated.
+    </p>
+    <div class="mt-8 flex flex-wrap justify-center gap-4">
+      <a href="#a1" class="rounded-md bg-amber px-6 py-3 font-semibold text-ink transition hover:-translate-y-0.5 hover:bg-amber-dim hover:text-zinc-100">See the three agents</a>
+    </div>
+  </div>
+</header>
+
+<!-- AGENT 1 -->
+<section id="a1" class="py-16">
+  <div class="mx-auto grid max-w-6xl items-center gap-10 px-5 md:grid-cols-2">
+    <div class="reveal">
+      <p class="font-mono text-xs uppercase tracking-widest text-sky">Agent 01 · speed-to-booking</p>
+      <h2 class="mt-2 text-3xl font-bold tracking-tight text-zinc-100">Instant Inquiry Response</h2>
+      <p class="mt-4 leading-relaxed text-zinc-400">A guest messages your direct site or WhatsApp at 23:40: <i class="text-zinc-300">"Do you have a 2BR near the beach, Aug 14–17, for 4 people?"</i> The agent answers in seconds — with a real available unit, a real quote, and a booking link — using your live calendar and rates. Your team wakes up to a booking, not an inquiry.</p>
+      <p class="mt-3 leading-relaxed text-zinc-400">Every inquiry that converts direct instead of drifting back to Airbnb keeps the commission in your pocket. Complex cases still escalate to a human — the agent knows what it shouldn't answer.</p>
+      <div class="mt-5 rounded-xl border border-ok/25 bg-ok/5 p-4 font-mono text-sm">
+        <p class="text-xs uppercase tracking-widest text-ok">The money (modeled — your audit replaces this with your numbers)</p>
+        <p class="mt-2 text-zinc-300">Avg direct booking ₪2,400 · OTA commission avoided ~15% = <b class="text-ok">₪360/booking</b></p>
+        <p class="mt-1 text-zinc-400">+8 rescued direct bookings/mo ≈ <b class="text-ok">₪2,880/mo</b> commission kept — before counting the bookings that simply wouldn't have happened at a 6-hour reply time.</p>
+      </div>
+      <a href="demo-inquiry.html" class="mt-6 inline-block rounded-md border border-amber/40 bg-amber/10 px-5 py-2.5 font-semibold text-amber transition hover:bg-amber/20">Open the live demo →</a>
+    </div>
+    <div class="reveal rounded-xl border border-line bg-panel p-5 font-mono text-[12px] leading-relaxed text-zinc-400">
+      <p class="mb-2 text-[10px] uppercase tracking-widest text-zinc-600">demo preview · direct-site chat</p>
+      <p><span class="text-sky">guest 23:41</span> — 2BR near the beach, Aug 14–17, 4 people?</p>
+      <p class="mt-2"><span class="text-ok">agent 23:41</span> — Yes! HaYarkon 156 · Apt 2 (2BR, sea view) is free Aug 14–17. ₪665/night → <b class="text-zinc-200">₪565/night direct</b>, total ₪1,695. Hold it for 24h?</p>
+      <p class="mt-2 text-zinc-600">response time: 9 seconds · unit + rate pulled from live records</p>
+    </div>
+  </div>
+</section>
+
+<!-- AGENT 2 -->
+<section id="a2" class="border-t border-line bg-panel/40 py-16">
+  <div class="mx-auto grid max-w-6xl items-center gap-10 px-5 md:grid-cols-2">
+    <div class="reveal order-2 md:order-1 rounded-xl border border-line bg-ink p-5 font-mono text-[12px] leading-relaxed text-zinc-400">
+      <p class="mb-2 text-[10px] uppercase tracking-widest text-zinc-600">demo preview · guest journey</p>
+      <p><span class="text-amber">T−3 days</span> → "Flight lands early? Check in from 11:00 — ₪120" <span class="text-ok">✓ accepted</span></p>
+      <p class="mt-1"><span class="text-amber">Day 2</span> → "Mid-stay cleaning tomorrow — ₪180" <span class="text-zinc-600">declined</span></p>
+      <p class="mt-1"><span class="text-amber">T−1 night</span> → "Late checkout until 15:00 — ₪150" <span class="text-ok">✓ accepted</span></p>
+      <p class="mt-2 text-zinc-600">+₪270 on one stay · offers timed by the agent, priced by you</p>
+    </div>
+    <div class="reveal order-1 md:order-2">
+      <p class="font-mono text-xs uppercase tracking-widest text-sky">Agent 02 · ancillary revenue</p>
+      <h2 class="mt-2 text-3xl font-bold tracking-tight text-zinc-100">The Upsell Agent</h2>
+      <p class="mt-4 leading-relaxed text-zinc-400">Early check-in, late checkout, mid-stay cleaning, airport pickup, local tours — offered at the moment they're most likely to be wanted, not buried in a welcome email. The agent reads the stay context (arrival time, party size, length of stay) and times each offer.</p>
+      <p class="mt-3 leading-relaxed text-zinc-400">Industry benchmark for AI-timed upsell offers: <b class="text-zinc-200">15–20% conversion</b>. This is pure margin on inventory you already own — an empty morning becomes a paid early check-in.</p>
+      <div class="mt-5 rounded-xl border border-ok/25 bg-ok/5 p-4 font-mono text-sm">
+        <p class="text-xs uppercase tracking-widest text-ok">The money (modeled)</p>
+        <p class="mt-2 text-zinc-300">60 units · ~140 stays/mo · 2 offers/stay · 17% accept · avg ₪140</p>
+        <p class="mt-1 text-zinc-400">≈ <b class="text-ok">₪6,660/mo</b> of ancillary revenue that costs nothing to fulfill beyond scheduling.</p>
+      </div>
+      <a href="demo-upsell.html" class="mt-6 inline-block rounded-md border border-amber/40 bg-amber/10 px-5 py-2.5 font-semibold text-amber transition hover:bg-amber/20">Open the live demo →</a>
+    </div>
+  </div>
+</section>
+
+<!-- AGENT 3 -->
+<section id="a3" class="border-t border-line py-16">
+  <div class="mx-auto grid max-w-6xl items-center gap-10 px-5 md:grid-cols-2">
+    <div class="reveal">
+      <p class="font-mono text-xs uppercase tracking-widest text-sky">Agent 03 · the second booking</p>
+      <h2 class="mt-2 text-3xl font-bold tracking-tight text-zinc-100">Repeat-Guest Reactivation</h2>
+      <p class="mt-4 leading-relaxed text-zinc-400">The first booking comes from Airbnb and pays Airbnb. The second one doesn't have to. The agent works your past-guest list — captured at every stay — and writes personal win-back messages with a returning-guest direct rate, timed to each guest's booking pattern (same season, anniversaries, holiday windows).</p>
+      <p class="mt-3 leading-relaxed text-zinc-400">This is the most underused lever in the industry — most operators collect the emails and never use them. A management company with years of history is sitting on its cheapest acquisition channel.</p>
+      <div class="mt-5 rounded-xl border border-ok/25 bg-ok/5 p-4 font-mono text-sm">
+        <p class="text-xs uppercase tracking-widest text-ok">The money (modeled)</p>
+        <p class="mt-2 text-zinc-300">1,800 past guests · 3% rebook/season · avg stay ₪2,400 direct</p>
+        <p class="mt-1 text-zinc-400">≈ 54 bookings ≈ <b class="text-ok">₪129,600/season</b> gross — with ~₪19,400 of OTA commission avoided on top, at near-zero acquisition cost.</p>
+      </div>
+      <a href="demo-rebook.html" class="mt-6 inline-block rounded-md border border-amber/40 bg-amber/10 px-5 py-2.5 font-semibold text-amber transition hover:bg-amber/20">Open the live demo →</a>
+    </div>
+    <div class="reveal rounded-xl border border-line bg-panel p-5 font-mono text-[12px] leading-relaxed text-zinc-400">
+      <p class="mb-2 text-[10px] uppercase tracking-widest text-zinc-600">demo preview · win-back draft</p>
+      <p class="text-zinc-300">To: Dana & Yuval (stayed Mar 2026, Rothschild 33)</p>
+      <p class="mt-2">"Hi Dana & Yuval! Rothschild 33 has open dates around the Sukkot week you asked about last time. Your returning-guest rate: ₪565/night direct (₪665 on the platforms). Want us to hold it?"</p>
+      <p class="mt-2 text-zinc-600">drafted from stay history · human approves before sending</p>
+    </div>
+  </div>
+</section>
+
+<!-- HONEST NOTE + CTA -->
+<section id="contact" class="border-t border-line bg-panel py-16">
+  <div class="mx-auto max-w-3xl px-5 text-center">
+    <h2 class="text-3xl font-bold tracking-tight text-zinc-100">Every number above is a model, not a promise.</h2>
+    <p class="mx-auto mt-4 max-w-xl leading-relaxed text-zinc-400">The free audit replaces the assumptions with your real inquiry volume, your real guest list, and your real rates — and tells you honestly which of the three agents pays off first for your operation, and which isn't worth it yet.</p>
+    <p class="mt-3 text-sm text-zinc-500">And the standing rule across all three: agents draft and time the messages — your team approves anything guest-facing until your own numbers say otherwise.</p>
+    <a href="index.html#audit" class="mt-8 inline-block rounded-md bg-amber px-6 py-3 font-semibold text-ink transition hover:-translate-y-0.5 hover:bg-amber-dim hover:text-zinc-100">Book the free audit</a>
+  </div>
+</section>
+
+<footer class="border-t border-line py-10">
+  <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-5 text-xs text-zinc-600 md:flex-row">
+    <span>© 2026 SaaS-Displacer Labs · RentOps Revenue Agents</span>
+    <span class="font-mono">demos: <a href="demo-inquiry.html" class="text-amber">inquiry</a> · <a href="demo-upsell.html" class="text-amber">upsell</a> · <a href="demo-rebook.html" class="text-amber">rebook</a></span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  const obs = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && e.target.classList.add('in')), { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+})();
+</script>
+</body>
+</html>
