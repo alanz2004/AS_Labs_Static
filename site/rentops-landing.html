@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RentOps by SaaS-Displacer Labs — Own the Software That Runs Your Rentals</title>
+<meta name="description" content="Bespoke AI-agent operations for short-term and long-term rental managers. Keep your channel manager. Own everything else." />
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+tailwind.config = { theme: { extend: {
+  fontFamily: { display: ['"Space Grotesk"','sans-serif'], mono: ['"JetBrains Mono"','monospace'] },
+  colors: { ink:'#0A0B0E', panel:'#12141A', line:'#22252E', amber:{DEFAULT:'#FFB020', dim:'#B37A12'}, ok:'#34D399', bad:'#F87171', sky:'#38BDF8' },
+}}};
+</script>
+<style>
+  body { background:#0A0B0E; }
+  .reveal { opacity:0; transform:translateY(18px); transition:opacity .7s ease, transform .7s ease; }
+  .reveal.in { opacity:1; transform:none; }
+  input[type=range] { accent-color:#FFB020; }
+  @media (prefers-reduced-motion: reduce) { .reveal { opacity:1; transform:none; transition:none; } }
+</style>
+</head>
+<body class="font-display text-zinc-300 antialiased selection:bg-amber/30 selection:text-white">
+
+<nav class="sticky top-0 z-40 border-b border-line bg-ink/85 backdrop-blur">
+  <div class="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
+    <div class="flex items-center gap-2">
+      <span class="inline-block h-2.5 w-2.5 rounded-sm bg-amber"></span>
+      <span class="font-semibold tracking-tight text-zinc-100">RentOps <span class="text-zinc-500">by</span> <span class="text-amber">SaaS-Displacer Labs</span></span>
+    </div>
+    <div class="hidden items-center gap-8 text-sm text-zinc-400 md:flex">
+      <a href="#keep" class="transition hover:text-zinc-100">What stays</a>
+      <a href="#console" class="transition hover:text-zinc-100">The console</a>
+      <a href="#audit" class="rounded-md bg-amber px-4 py-2 font-semibold text-ink transition hover:bg-amber-dim hover:text-zinc-100">Free stack audit</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="relative overflow-hidden">
+  <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(255,176,32,0.07),transparent_55%)]"></div>
+  <div class="mx-auto grid max-w-6xl gap-12 px-5 pb-20 pt-16 md:grid-cols-2 md:pt-24">
+    <div class="reveal">
+      <p class="mb-4 inline-block rounded-full border border-line bg-panel px-3 py-1 font-mono text-xs tracking-wider text-amber">FOR RENTAL MANAGEMENT COMPANIES</p>
+      <h1 class="text-4xl font-bold leading-tight tracking-tight text-zinc-100 md:text-5xl">
+        Your software bill grows<br />with every apartment.<br /><span class="text-amber">Your margin doesn't.</span>
+      </h1>
+      <p class="mt-5 max-w-lg text-lg leading-relaxed text-zinc-400">
+        A full rental-management stack runs $80–120 per unit, per month — PMS, pricing, cleaning ops, locks, reporting. We build the operations layer you own instead: AI agents on your own database that draft guest replies, generate owner statements, and dispatch maintenance.
+      </p>
+      <p class="mt-3 max-w-lg text-sm text-zinc-500">
+        And the honest part up front: your channel manager stays. Real-time Airbnb and Booking.com sync belongs with certified partners — we displace the manual work around it, which is where your hours actually go.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-4">
+        <a href="#audit" class="rounded-md bg-amber px-6 py-3 font-semibold text-ink transition hover:-translate-y-0.5 hover:bg-amber-dim hover:text-zinc-100">Get your free stack audit</a>
+        <a href="#console" class="rounded-md border border-line px-6 py-3 font-semibold text-zinc-300 transition hover:border-zinc-500">See the console</a>
+      </div>
+    </div>
+
+    <!-- Signature: the per-unit meter -->
+    <div class="reveal rounded-xl border border-line bg-panel p-6 shadow-2xl shadow-black/50">
+      <div class="mb-4 flex items-center justify-between">
+        <span class="font-mono text-xs uppercase tracking-widest text-zinc-500">Your stack bill, per year</span>
+        <span class="font-mono text-xs text-zinc-600">drag your portfolio size</span>
+      </div>
+      <div class="mb-1 flex items-baseline justify-between font-mono">
+        <span class="text-sm text-zinc-400">Units under management</span>
+        <span class="text-2xl font-semibold text-zinc-100" id="u-count">60</span>
+      </div>
+      <input type="range" min="10" max="300" value="60" step="5" class="w-full" id="u-slider" oninput="recalc()" />
+      <div class="mt-5 space-y-3 font-mono text-sm">
+        <div class="rounded-md border border-bad/20 bg-bad/5 px-3 py-3">
+          <div class="flex justify-between"><span class="text-zinc-400">Full SaaS stack @ $80–120/unit/mo</span><span class="font-semibold text-bad" id="cost-saas">$57,600–86,400</span></div>
+          <p class="mt-1 text-[11px] text-zinc-600">grows linearly with every unit you add, forever</p>
+        </div>
+        <div class="rounded-md border border-ok/20 bg-ok/5 px-3 py-3">
+          <div class="flex justify-between"><span class="text-zinc-400">Owned agent layer + kept essentials</span><span class="font-semibold text-ok" id="cost-owned">$21,900–29,800</span></div>
+          <p class="mt-1 text-[11px] text-zinc-600" id="cost-note">keeps channel sync + pricing (~$25–35/unit) · adds flat install amortized + tokens + retainer</p>
+        </div>
+        <div class="flex justify-between border-t border-line pt-3 text-base">
+          <span class="font-semibold text-zinc-200">First-year difference</span>
+          <span class="font-semibold text-amber" id="cost-delta">$35,700–56,600</span>
+        </div>
+      </div>
+      <p class="mt-4 text-xs leading-relaxed text-zinc-600">Modeled from published 2026 stack benchmarks; the "owned" line includes what honestly stays. Your audit replaces this model with your real invoices.</p>
+    </div>
+  </div>
+</header>
+
+<!-- KEEP VS DISPLACE -->
+<section id="keep" class="border-t border-line py-20">
+  <div class="mx-auto max-w-6xl px-5">
+    <div class="reveal mb-10 max-w-2xl">
+      <h2 class="text-3xl font-bold tracking-tight text-zinc-100">What stays. What goes. Honestly.</h2>
+      <p class="mt-3 text-zinc-400">Anyone promising to replace your entire stack is selling you a broken calendar. The audit draws this line for your specific operation.</p>
+    </div>
+    <div class="reveal grid gap-3 md:grid-cols-2">
+      <div class="rounded-xl border border-line bg-panel p-6">
+        <p class="mb-4 font-mono text-xs uppercase tracking-widest text-ok">Stays — it earns its keep</p>
+        <ul class="space-y-3 text-sm leading-relaxed text-zinc-400">
+          <li><b class="text-zinc-200">Channel sync</b> — real-time Airbnb/Booking/Vrbo rates & availability need certified API partners. Non-negotiable.</li>
+          <li><b class="text-zinc-200">Dynamic pricing</b> — if it's lifting RevPAR 10–20%, it's paying for itself. We audit it, we don't touch it.</li>
+          <li><b class="text-zinc-200">Payment rails</b> — OTA payouts and card processing stay where they are.</li>
+        </ul>
+      </div>
+      <div class="rounded-xl border border-line bg-panel p-6">
+        <p class="mb-4 font-mono text-xs uppercase tracking-widest text-amber">Goes — you own it instead</p>
+        <ul class="space-y-3 text-sm leading-relaxed text-zinc-400">
+          <li><b class="text-zinc-200">Guest messaging labor</b> — the 40% of messages templates can't answer, drafted by agents from your unit data, approved by your team.</li>
+          <li><b class="text-zinc-200">Owner statements</b> — generated from reservations and expenses, in the owner's currency and language. Statement day becomes a review.</li>
+          <li><b class="text-zinc-200">Maintenance intake</b> — guest complaint → ticket → vendor dispatch → owner cost-approval, one chain.</li>
+          <li><b class="text-zinc-200">Overpriced PMS tiers</b> — often the audit's finding is "downgrade the plan, agent the gap."</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONSOLE SHOWCASE -->
+<section id="console" class="border-t border-line bg-panel/40 py-20">
+  <div class="mx-auto max-w-6xl px-5">
+    <div class="reveal mb-10 flex flex-wrap items-end justify-between gap-4">
+      <div class="max-w-2xl">
+        <h2 class="text-3xl font-bold tracking-tight text-zinc-100">One console. Agents draft, your team approves.</h2>
+        <p class="mt-3 text-zinc-400">Everything below is a working demo you can click — seeded data, real workflows.</p>
+      </div>
+      <a href="rentops-mvp.html" class="rounded-md border border-amber/40 bg-amber/10 px-5 py-2.5 font-semibold text-amber transition hover:bg-amber/20">Open the live demo →</a>
+    </div>
+    <div class="grid gap-4 md:grid-cols-2">
+      <div class="reveal rounded-xl border border-line bg-ink p-6">
+        <p class="font-mono text-xs uppercase tracking-widest text-sky">Unified inbox + agent drafts</p>
+        <p class="mt-2 text-sm leading-relaxed text-zinc-400">A guest asks about 1am check-in. The agent already knows the door code, the check-in time, and the parking situation for that exact unit — the draft is waiting before your team opens the thread. Nothing sends without approval.</p>
+        <div class="mt-4 rounded-md border border-line bg-panel p-3 font-mono text-[11px] leading-relaxed text-zinc-500">
+          <span class="text-emerald-400">agent draft:</span> "Your door code is 4821#, active from 15:00… closest lot is Frishman Beach, ~₪60 overnight…" <span class="text-zinc-600">[Approve & send]</span>
+        </div>
+      </div>
+      <div class="reveal rounded-xl border border-line bg-ink p-6">
+        <p class="font-mono text-xs uppercase tracking-widest text-sky">Owner statements that write themselves</p>
+        <p class="mt-2 text-sm leading-relaxed text-zinc-400">Per-unit revenue, OTA commissions, pass-through expenses, management fee, net payout — in the owner's currency, with the insight a spreadsheet never adds: "direct-booking share hit 45%, commissions saved ₪892 vs June."</p>
+        <div class="mt-4 rounded-md border border-line bg-panel p-3 font-mono text-[11px] leading-relaxed text-zinc-500">
+          NET PAYOUT ......... ₪17,463 <span class="text-zinc-600">≈ £3,690</span><br/>Transfer: Aug 5 · <span class="text-emerald-400">drafted in 4 seconds</span>
+        </div>
+      </div>
+      <div class="reveal rounded-xl border border-line bg-ink p-6">
+        <p class="font-mono text-xs uppercase tracking-widest text-sky">Maintenance, one chain</p>
+        <p class="mt-2 text-sm leading-relaxed text-zinc-400">"The AC died" at 21:15 becomes: high-priority ticket, contract vendor pinged for a 07:00 slot, guest reassured with the fan location, owner asked to pre-approve the repair cost — four drafts from one message.</p>
+        <div class="mt-4 rounded-md border border-line bg-panel p-3 font-mono text-[11px] leading-relaxed text-zinc-500">
+          <span class="text-amber">▸ upsert_record</span> ticket/T-1042 · HIGH · CoolTech Herzliya<br/><span class="text-emerald-400">✓ 3 drafts queued for review</span>
+        </div>
+      </div>
+      <div class="reveal rounded-xl border border-line bg-ink p-6">
+        <p class="font-mono text-xs uppercase tracking-widest text-sky">An audit log your accountant can read</p>
+        <p class="mt-2 text-sm leading-relaxed text-zinc-400">Every agent action is logged: what it read, what it changed, what it cost in tokens, who approved it. Your data sits in your database — export it, query it, take it with you. That's what owning your operations means.</p>
+        <div class="mt-4 rounded-md border border-line bg-panel p-3 font-mono text-[11px] leading-relaxed text-zinc-500">
+          agent.owner_statement owner=rosen tokens=1,984 status=drafted<br/>human.approve_send unit=BY82-4 status=sent
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="border-t border-line py-20">
+  <div class="mx-auto max-w-6xl px-5">
+    <h2 class="reveal mb-10 text-3xl font-bold tracking-tight text-zinc-100">From audit to owned operations in 30 days</h2>
+    <div class="grid gap-6 md:grid-cols-3">
+      <div class="reveal rounded-xl border border-line bg-panel p-6">
+        <p class="font-mono text-xs uppercase tracking-widest text-amber">Week 1 · Audit</p>
+        <h3 class="mt-2 text-lg font-semibold text-zinc-100">We map your stack and your hours</h3>
+        <p class="mt-2 text-sm leading-relaxed text-zinc-400">One 45-minute call. A week later: a written map of every tool you pay for, what it costs per unit, which workflows agents can own — and which honestly stay. The report is yours either way.</p>
+      </div>
+      <div class="reveal rounded-xl border border-line bg-panel p-6">
+        <p class="font-mono text-xs uppercase tracking-widest text-amber">Weeks 2–3 · Build</p>
+        <h3 class="mt-2 text-lg font-semibold text-zinc-100">Flat-fee install on your data</h3>
+        <p class="mt-2 text-sm leading-relaxed text-zinc-400">Your reservations, units, owners, and vendors in a database you own; agents wired to your two highest-hour workflows first. Flat price quoted in the audit — no hourly billing, ever.</p>
+      </div>
+      <div class="reveal rounded-xl border border-line bg-panel p-6">
+        <p class="font-mono text-xs uppercase tracking-widest text-amber">Days 15–45 · Parallel run</p>
+        <h3 class="mt-2 text-lg font-semibold text-zinc-100">Your team signs off, then you cancel</h3>
+        <p class="mt-2 text-sm leading-relaxed text-zinc-400">Current tools stay live while your team compares every agent draft against reality. Only when your own numbers say it works do you downgrade the tiers you no longer need.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="audit" class="border-t border-line bg-panel py-20">
+  <div class="mx-auto grid max-w-6xl items-center gap-12 px-5 md:grid-cols-2">
+    <div class="reveal">
+      <h2 class="text-3xl font-bold tracking-tight text-zinc-100">Free stack audit for rental managers</h2>
+      <p class="mt-4 leading-relaxed text-zinc-400">Tell us your portfolio size and what charges your card monthly. Within a week you get a written line: keep, downgrade, or own — with the numbers for each.</p>
+      <ul class="mt-6 space-y-3 text-sm text-zinc-400">
+        <li class="flex gap-3"><span class="text-ok">✓</span> 45-minute call · written report in 5 business days</li>
+        <li class="flex gap-3"><span class="text-ok">✓</span> Per-unit cost map of your current stack</li>
+        <li class="flex gap-3"><span class="text-ok">✓</span> Fixed-price quote, and an honest "not worth it" if that's the answer</li>
+      </ul>
+    </div>
+    <div class="reveal rounded-xl border border-line bg-ink p-6">
+      <div id="lead-form" class="grid gap-4">
+        <div><label for="lf-name" class="mb-1 block font-mono text-xs uppercase tracking-widest text-zinc-500">Name</label>
+        <input id="lf-name" type="text" autocomplete="name" class="w-full rounded-md border border-line bg-panel px-3 py-2.5 text-sm text-zinc-200 outline-none transition focus:border-amber" /></div>
+        <div><label for="lf-email" class="mb-1 block font-mono text-xs uppercase tracking-widest text-zinc-500">Work email</label>
+        <input id="lf-email" type="email" autocomplete="email" class="w-full rounded-md border border-line bg-panel px-3 py-2.5 text-sm text-zinc-200 outline-none transition focus:border-amber" /></div>
+        <div><label for="lf-units" class="mb-1 block font-mono text-xs uppercase tracking-widest text-zinc-500">Units under management</label>
+        <select id="lf-units" class="w-full rounded-md border border-line bg-panel px-3 py-2.5 text-sm text-zinc-200 outline-none focus:border-amber">
+          <option>10–25</option><option selected>25–75</option><option>75–150</option><option>150+</option>
+        </select></div>
+        <div><label for="lf-stack" class="mb-1 block font-mono text-xs uppercase tracking-widest text-zinc-500">Main tools today</label>
+        <input id="lf-stack" type="text" placeholder="Guesty, PriceLabs, WhatsApp groups…" class="w-full rounded-md border border-line bg-panel px-3 py-2.5 text-sm text-zinc-200 placeholder-zinc-600 outline-none transition focus:border-amber" /></div>
+        <button onclick="submitLead()" class="mt-2 rounded-md bg-amber px-5 py-3 font-semibold text-ink transition hover:bg-amber-dim hover:text-zinc-100">Request my audit</button>
+        <p id="lf-error" class="hidden rounded-md border border-bad/30 bg-bad/10 px-3 py-2 text-xs text-bad"></p>
+      </div>
+      <div id="lead-done" class="hidden text-center">
+        <p class="text-4xl">🔑</p>
+        <h3 class="mt-3 text-lg font-semibold text-zinc-100">Audit request drafted</h3>
+        <p class="mt-2 text-sm text-zinc-400">Your email client opened with the request pre-filled — send it and we reply within one business day.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="border-t border-line py-10">
+  <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-5 text-xs text-zinc-600 md:flex-row">
+    <span>© 2026 SaaS-Displacer Labs · RentOps — owned operations for rental managers.</span>
+    <span class="font-mono">audits@saas-displacer.example</span>
+  </div>
+</footer>
+
+<script>
+function recalc() {
+  const u = +document.getElementById('u-slider').value;
+  document.getElementById('u-count').textContent = u;
+  const saasLo = u*80*12, saasHi = u*120*12;
+  // owned: kept essentials $25–35/unit/mo + $5k install amortized yr1 + $500/mo retainer + ~$1.5/unit/mo tokens
+  const ownLo = u*25*12 + 5000 + 500*12 + u*1.5*12;
+  const ownHi = u*35*12 + 5000 + 500*12 + u*1.5*12;
+  const f = n => '$' + Math.round(n).toLocaleString('en-US');
+  document.getElementById('cost-saas').textContent = f(saasLo)+'–'+f(saasHi).slice(1);
+  document.getElementById('cost-owned').textContent = f(ownLo)+'–'+f(ownHi).slice(1);
+  document.getElementById('cost-delta').textContent = f(saasLo-ownHi)+'–'+f(saasHi-ownLo).slice(1);
+}
+recalc();
+
+(function () {
+  const obs = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && e.target.classList.add('in')), { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+})();
+
+function submitLead() {
+  const name = document.getElementById('lf-name').value.trim();
+  const email = document.getElementById('lf-email').value.trim();
+  const units = document.getElementById('lf-units').value;
+  const stack = document.getElementById('lf-stack').value.trim();
+  const err = document.getElementById('lf-error');
+  if (!name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    err.textContent = !name ? 'Please enter your name.' : 'Please enter a valid work email.';
+    err.classList.remove('hidden'); return;
+  }
+  err.classList.add('hidden');
+  const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\nUnits: ${units}\nCurrent tools: ${stack || '(not specified)'}\n\nPlease schedule my free stack audit.`);
+  window.location.href = `mailto:audits@saas-displacer.example?subject=${encodeURIComponent('Free rental stack audit — ' + name)}&body=${body}`;
+  document.getElementById('lead-form').classList.add('hidden');
+  document.getElementById('lead-done').classList.remove('hidden');
+}
+</script>
+</body>
+</html>

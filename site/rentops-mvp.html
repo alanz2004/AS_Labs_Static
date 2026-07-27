@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RentOps — STR Operations Console</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+tailwind.config = { theme: { extend: {
+  fontFamily: { display: ['"Space Grotesk"','sans-serif'], mono: ['"JetBrains Mono"','monospace'] },
+}}};
+</script>
+<style>
+  body { background:#09090b; }
+  .caret::after { content:'▌'; color:#f59e0b; animation:blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity:0; } }
+  .tab-active { background:#f59e0b; color:#09090b; font-weight:600; }
+  @media (prefers-reduced-motion: reduce) { .caret::after { animation:none; } }
+</style>
+</head>
+<body class="min-h-screen font-display text-zinc-200 px-4 py-8 md:px-10">
+<div class="mx-auto max-w-6xl">
+
+<header class="mb-6 flex flex-wrap items-end justify-between gap-3">
+  <div>
+    <h1 class="text-xl font-semibold tracking-tight text-zinc-100">RentOps <span class="text-amber-400">· STR Operations Console</span></h1>
+    <p class="mt-1 text-sm text-zinc-500">Org: <span class="font-mono text-zinc-400">sea-n-rent-demo</span> · 6 units · agents draft, humans send</p>
+  </div>
+  <div class="flex gap-4 font-mono text-xs text-zinc-500">
+    <span>Occupancy <b class="text-emerald-400">86%</b></span>
+    <span>ADR <b class="text-amber-400">₪612</b></span>
+    <span>Tokens this month <b class="text-sky-400" id="tok-total">41,208</b></span>
+  </div>
+</header>
+
+<nav class="mb-6 flex flex-wrap gap-1 rounded-lg border border-zinc-800 bg-zinc-900/60 p-1 font-mono text-xs">
+  <button data-tab="inbox" class="tab-btn tab-active rounded px-3 py-1.5" onclick="showTab('inbox')">Unified inbox <span id="inbox-badge" class="ml-1 rounded-full bg-rose-500/20 px-1.5 text-rose-400">3</span></button>
+  <button data-tab="units" class="tab-btn rounded px-3 py-1.5 text-zinc-400" onclick="showTab('units')">Units & calendar</button>
+  <button data-tab="owners" class="tab-btn rounded px-3 py-1.5 text-zinc-400" onclick="showTab('owners')">Owner statements</button>
+  <button data-tab="maint" class="tab-btn rounded px-3 py-1.5 text-zinc-400" onclick="showTab('maint')">Maintenance <span id="maint-badge" class="ml-1 rounded-full bg-zinc-700 px-1.5 text-zinc-300">2</span></button>
+</nav>
+
+<!-- ══ INBOX ══ -->
+<section id="tab-inbox" class="grid gap-4 md:grid-cols-[320px,1fr]">
+  <div class="rounded-xl border border-zinc-800 bg-zinc-900/60">
+    <p class="border-b border-zinc-800 px-4 py-3 text-xs font-medium uppercase tracking-widest text-zinc-500">All channels</p>
+    <div id="msg-list"></div>
+  </div>
+  <div class="rounded-xl border border-zinc-800 bg-zinc-900/60 p-5">
+    <div id="thread-empty" class="py-16 text-center text-sm text-zinc-600">Select a message. Agents have pre-read the context.</div>
+    <div id="thread" class="hidden">
+      <div class="mb-1 flex items-center justify-between">
+        <p class="font-semibold text-zinc-100" id="t-guest"></p>
+        <span class="font-mono text-[11px]" id="t-chan"></span>
+      </div>
+      <p class="mb-3 font-mono text-xs text-zinc-500" id="t-meta"></p>
+      <div class="rounded-lg border border-zinc-800 bg-zinc-950 p-4 text-sm leading-relaxed text-zinc-300" id="t-body"></div>
+      <div class="mt-4 flex flex-wrap gap-2">
+        <button id="btn-draft" onclick="draftReply()" class="rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-zinc-950 transition hover:bg-amber-400 disabled:bg-zinc-700 disabled:text-zinc-500">Draft reply with agent</button>
+        <button id="btn-workflow" onclick="runIntake()" class="hidden rounded-lg border border-rose-500/40 bg-rose-500/10 px-4 py-2 text-sm font-semibold text-rose-300 transition hover:bg-rose-500/20">Run maintenance intake</button>
+      </div>
+      <div id="draft-wrap" class="mt-4 hidden rounded-lg border border-emerald-500/25 bg-emerald-500/5 p-4">
+        <p class="mb-2 font-mono text-[11px] uppercase tracking-widest text-emerald-400">agent draft — review before sending</p>
+        <pre id="draft-body" class="whitespace-pre-wrap font-mono text-[12.5px] leading-relaxed text-zinc-300"></pre>
+        <div class="mt-3 flex gap-2">
+          <button onclick="approveDraft()" class="rounded-md bg-emerald-500/90 px-3 py-1.5 text-xs font-semibold text-zinc-950">Approve & send</button>
+          <button class="rounded-md border border-zinc-700 px-3 py-1.5 text-xs text-zinc-400">Edit</button>
+        </div>
+      </div>
+      <div id="wf-trace" class="mt-4 hidden space-y-1.5 rounded-lg border border-zinc-800 bg-zinc-950 p-4 font-mono text-[12px] leading-relaxed"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ UNITS ══ -->
+<section id="tab-units" class="hidden rounded-xl border border-zinc-800 bg-zinc-900/60 p-5">
+  <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
+    <p class="text-xs font-medium uppercase tracking-widest text-zinc-500">Next 14 nights · all units</p>
+    <div class="flex gap-3 font-mono text-[11px] text-zinc-500">
+      <span><span class="mr-1 inline-block h-2.5 w-2.5 rounded-sm bg-rose-400/80"></span>Airbnb</span>
+      <span><span class="mr-1 inline-block h-2.5 w-2.5 rounded-sm bg-sky-400/80"></span>Booking</span>
+      <span><span class="mr-1 inline-block h-2.5 w-2.5 rounded-sm bg-emerald-400/80"></span>Direct</span>
+      <span><span class="mr-1 inline-block h-2.5 w-2.5 rounded-sm bg-zinc-700"></span>Vacant</span>
+    </div>
+  </div>
+  <div id="cal" class="space-y-2 overflow-x-auto"></div>
+  <p class="mt-4 text-xs text-zinc-500">Direct-booking share this month: <b class="text-emerald-400">31%</b> — every direct night saves the 15–18% OTA commission. The agent flags vacant weekend gaps and drafts the promo message for the direct list.</p>
+</section>
+
+<!-- ══ OWNERS ══ -->
+<section id="tab-owners" class="hidden grid gap-4 md:grid-cols-[300px,1fr]">
+  <div class="rounded-xl border border-zinc-800 bg-zinc-900/60">
+    <p class="border-b border-zinc-800 px-4 py-3 text-xs font-medium uppercase tracking-widest text-zinc-500">Owners · July 2026</p>
+    <div id="owner-list"></div>
+  </div>
+  <div class="rounded-xl border border-zinc-800 bg-zinc-900/60 p-5">
+    <div id="stmt-empty" class="py-16 text-center text-sm text-zinc-600">Select an owner. Statement day used to take a full day — now it's a review.</div>
+    <div id="stmt" class="hidden">
+      <p class="mb-2 font-mono text-[11px] uppercase tracking-widest text-emerald-400">agent-generated statement — review before sending</p>
+      <pre id="stmt-body" class="whitespace-pre-wrap rounded-lg border border-zinc-800 bg-zinc-950 p-4 font-mono text-[12.5px] leading-relaxed text-zinc-300"></pre>
+      <div class="mt-3 flex gap-2">
+        <button class="rounded-md bg-emerald-500/90 px-3 py-1.5 text-xs font-semibold text-zinc-950">Approve & email owner</button>
+        <button class="rounded-md border border-zinc-700 px-3 py-1.5 text-xs text-zinc-400">Export PDF</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ MAINTENANCE ══ -->
+<section id="tab-maint" class="hidden rounded-xl border border-zinc-800 bg-zinc-900/60">
+  <p class="border-b border-zinc-800 px-5 py-3 text-xs font-medium uppercase tracking-widest text-zinc-500">Open tickets</p>
+  <div id="ticket-list" class="divide-y divide-zinc-800/70"></div>
+</section>
+
+<!-- ══ AUDIT ══ -->
+<section class="mt-6 rounded-xl border border-zinc-800 bg-zinc-900/40 px-5 py-4">
+  <p class="mb-2 text-xs font-medium uppercase tracking-widest text-zinc-600">Immutable audit log — every agent action, every token</p>
+  <div id="audit" class="space-y-1 font-mono text-[11.5px] text-zinc-500">
+    <div>2026-07-19T07:02:11Z  agent.owner_statement  owner=rosen  tokens=1,984  status=drafted</div>
+    <div>2026-07-19T06:40:05Z  agent.guest_reply  unit=BY82-4  channel=airbnb  tokens=712  status=approved_by_noa</div>
+  </div>
+</section>
+
+<footer class="mt-6 text-center text-xs text-zinc-700">RentOps by SaaS-Displacer Labs · demo environment, seeded data · your PMS and channel sync stay exactly where they are</footer>
+</div>
+
+<script>
+/* RentOps demo — deterministic, in-memory. Agents draft; humans approve. */
+const $ = id => document.getElementById(id);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+let tokens = 41208;
+
+const UNITS = {
+  "BY82-4":  { name: "Ben Yehuda 82 · Apt 4",  city:"Tel Aviv",  code:"4821#", checkin:"15:00", owner:"rosen" },
+  "DZ210-12":{ name: "Dizengoff 210 · Apt 12", city:"Tel Aviv",  code:"7702#", checkin:"15:00", owner:"rosen" },
+  "RT33-7":  { name: "Rothschild 33 · Apt 7",  city:"Tel Aviv",  code:"1189#", checkin:"16:00", owner:"katz"  },
+  "HY156-2": { name: "HaYarkon 156 · Apt 2",   city:"Tel Aviv",  code:"9034#", checkin:"15:00", owner:"katz"  },
+  "HM-T2-18":{ name: "Herzliya Marina T2 · 18",city:"Herzliya",  code:"5510#", checkin:"16:00", owner:"weiss" },
+  "FL9-1":   { name: "Vitkin 9 · Apt 1",       city:"Florentin", code:"2277#", checkin:"14:00", owner:"weiss" },
+};
+
+const MSGS = [
+  { id:"m1", guest:"Emma Laurent", chan:"Airbnb", chanCls:"text-rose-400", unit:"BY82-4", time:"22:41", unread:true,
+    body:"Hi! We land at 1am tonight — is late self check-in possible? Also, is there parking nearby? Thanks!",
+    draft:(u)=>`Hi Emma! Yes — self check-in works at any hour. Your door code is ${u.code}, active from ${u.checkin} today. The building entrance code is the same.\n\nFor parking: the closest lot is the Frishman Beach lot (5 min walk, ~₪60 overnight); street parking is free after 19:00 in the blue-white zones but fills up fast.\n\nSafe flight — message us anytime, we're on 24/7.\n— Sea N' Rent team` },
+  { id:"m2", guest:"Tom Becker", chan:"Booking.com", chanCls:"text-sky-400", unit:"HM-T2-18", time:"21:15", unread:true, maintenance:true,
+    body:"The AC in the living room stopped working this evening. It's 31 degrees in here. We need someone to fix this tomorrow morning or we want a refund for tonight.",
+    draft:(u)=>`Hi Tom, sorry about the AC — that's not the stay we want you to have. A technician is being scheduled for tomorrow morning (you'll get the exact window shortly). Meanwhile there's a portable fan in the bedroom closet, top shelf.\n\nWe've logged tonight's discomfort with management for a goodwill adjustment — you'll hear from us tomorrow once the repair is confirmed.\n— Sea N' Rent team` },
+  { id:"m3", guest:"Dana & Yuval", chan:"Direct", chanCls:"text-emerald-400", unit:"RT33-7", time:"19:58", unread:true,
+    body:"Hi, we stayed with you in March (Rothschild 33). Coming back Aug 14-17 with another couple — do you have two units close together? Direct price like last time?",
+    draft:(u)=>`Hi Dana & Yuval, great to have you back! For Aug 14–17 we can offer Rothschild 33 · Apt 7 again plus HaYarkon 156 · Apt 2 — an 8-minute walk apart, both 2BR.\n\nDirect returning-guest rate: ₪565/night per unit (vs ₪665 on the platforms). Shall I hold both for 24h while you confirm with the other couple?\n— Sea N' Rent team` },
+  { id:"m4", guest:"Marco Rossi", chan:"Airbnb", chanCls:"text-rose-400", unit:"FL9-1", time:"18:22", unread:false,
+    body:"What's the wifi password? The card on the fridge is missing.",
+    draft:(u)=>`Hi Marco — network: Vitkin9_Guest · password: seaview2026. If the signal is weak in the bedroom, the repeater behind the TV just needs its button pressed once. Enjoy Florentin!\n— Sea N' Rent team` },
+];
+
+const OWNERS = {
+  rosen: { name:"David Rosen", loc:"London · GBP", units:["BY82-4","DZ210-12"],
+    stmt:`OWNER STATEMENT — July 2026\nDavid Rosen · 2 units · Sea N' Rent Management\n\nBen Yehuda 82 · Apt 4\n  19 nights (Airbnb 9 · Booking 5 · Direct 5)\n  Gross rental income .............. ₪12,640\n  OTA commissions .................. -₪1,289\n  Cleaning (pass-through) .......... -₪1,140\n\nDizengoff 210 · Apt 12\n  22 nights (Airbnb 12 · Direct 10)\n  Gross rental income .............. ₪14,880\n  OTA commissions .................. -₪1,562\n  Cleaning (pass-through) .......... -₪1,320\n  Plumber call-out (Jul 8, approved) -₪380\n\nManagement fee (20% of net rent) ... -₪4,366\n──────────────────────────────────\nNET PAYOUT ......................... ₪17,463\n≈ £3,690 at 4.732 (Bank of Israel, Jul 31)\nTransfer: Aug 5 · Wise, as usual\n\nNote: Apt 12 direct-booking share hit 45% this\nmonth — commissions saved: ₪892 vs June.\n\nDrafted from reservation + expense records.\nReview before sending.` },
+  katz: { name:"Sarah Katz", loc:"New York · USD", units:["RT33-7","HY156-2"],
+    stmt:`OWNER STATEMENT — July 2026\nSarah Katz · 2 units · Sea N' Rent Management\n\nRothschild 33 · Apt 7\n  24 nights · Gross ................ ₪16,320\n  OTA commissions .................. -₪1,410\n  Cleaning (pass-through) .......... -₪1,440\n\nHaYarkon 156 · Apt 2\n  17 nights · Gross ................ ₪11,220\n  OTA commissions .................. -₪1,201\n  Cleaning (pass-through) .......... -₪1,020\n  AC filter service (quarterly) .... -₪240\n\nManagement fee (20% of net rent) ... -₪4,494\n──────────────────────────────────\nNET PAYOUT ......................... ₪17,735\n≈ $4,780 at 3.71 (Bank of Israel, Jul 31)\nTransfer: Aug 5\n\nNote: HaYarkon occupancy dipped to 55% — the\nagent flagged a pricing review for August;\nrecommendation attached separately.\n\nDrafted from reservation + expense records.\nReview before sending.` },
+  weiss: { name:"M. Weiss", loc:"Paris · EUR", units:["HM-T2-18","FL9-1"],
+    stmt:`OWNER STATEMENT — July 2026\nM. Weiss · 2 units · Sea N' Rent Management\n\nHerzliya Marina T2 · Apt 18\n  26 nights · Gross ................ ₪21,840\n  OTA commissions .................. -₪2,140\n  Cleaning (pass-through) .......... -₪1,560\n  AC repair (Jul 19, ticket T-1042)  -₪520\n\nVitkin 9 · Apt 1\n  20 nights · Gross ................ ₪9,800\n  OTA commissions .................. -₪940\n  Cleaning (pass-through) .......... -₪1,200\n\nManagement fee (20% of net rent) ... -₪5,056\n──────────────────────────────────\nNET PAYOUT ......................... ₪20,224\n≈ €5,140 at 3.935 (Bank of Israel, Jul 31)\nTransfer: Aug 5\n\nCe relevé est disponible en français sur demande.\n\nDrafted from reservation + expense records.\nReview before sending.` },
+};
+
+let TICKETS = [
+  { id:"T-1040", unit:"RT33-7", issue:"Washing machine door seal leaking", pri:"MED", status:"vendor scheduled · Jul 21", vendor:"A. Levi Appliances" },
+  { id:"T-1041", unit:"FL9-1", issue:"Balcony light flickering", pri:"LOW", status:"awaiting parts", vendor:"ElectroFix TLV" },
+];
+
+/* ── rendering ── */
+function showTab(t) {
+  for (const k of ["inbox","units","owners","maint"]) {
+    $("tab-"+k).classList.toggle("hidden", k!==t);
+  }
+  document.querySelectorAll(".tab-btn").forEach(b=>{
+    const on = b.dataset.tab===t;
+    b.classList.toggle("tab-active", on);
+    b.classList.toggle("text-zinc-400", !on);
+  });
+}
+
+function renderMsgs() {
+  $("msg-list").innerHTML = MSGS.map(m=>`
+    <button onclick="openMsg('${m.id}')" class="block w-full border-b border-zinc-800/70 px-4 py-3 text-left transition hover:bg-zinc-800/30">
+      <div class="flex items-center justify-between">
+        <span class="text-sm ${m.unread?'font-semibold text-zinc-100':'text-zinc-300'}">${m.guest}</span>
+        <span class="font-mono text-[10px] ${m.chanCls}">${m.chan}</span>
+      </div>
+      <p class="mt-0.5 truncate text-xs text-zinc-500">${m.body}</p>
+      <p class="mt-0.5 font-mono text-[10px] text-zinc-600">${UNITS[m.unit].name} · ${m.time}</p>
+    </button>`).join("");
+  $("inbox-badge").textContent = MSGS.filter(m=>m.unread).length;
+}
+
+let currentMsg = null;
+function openMsg(id) {
+  currentMsg = MSGS.find(m=>m.id===id);
+  currentMsg.unread = false; renderMsgs();
+  $("thread-empty").classList.add("hidden"); $("thread").classList.remove("hidden");
+  $("t-guest").textContent = currentMsg.guest;
+  $("t-chan").textContent = currentMsg.chan; $("t-chan").className = "font-mono text-[11px] "+currentMsg.chanCls;
+  $("t-meta").textContent = `${UNITS[currentMsg.unit].name} · today ${currentMsg.time}`;
+  $("t-body").textContent = currentMsg.body;
+  $("draft-wrap").classList.add("hidden"); $("draft-body").textContent="";
+  $("wf-trace").classList.add("hidden"); $("wf-trace").innerHTML="";
+  $("btn-draft").disabled = false;
+  $("btn-workflow").classList.toggle("hidden", !currentMsg.maintenance);
+}
+
+async function stream(el, text, cps=4) {
+  el.classList.add("caret");
+  for (let i=0;i<text.length;i+=cps){ el.textContent=text.slice(0,i+cps); await sleep(16); }
+  el.textContent=text; el.classList.remove("caret");
+}
+
+function audit(line, tok) {
+  tokens += tok;
+  $("tok-total").textContent = tokens.toLocaleString();
+  const d = document.createElement("div");
+  d.textContent = `${new Date().toISOString()}  ${line}  tokens=${tok.toLocaleString()}`;
+  $("audit").prepend(d);
+}
+
+async function draftReply() {
+  if (!currentMsg) return;
+  $("btn-draft").disabled = true;
+  $("draft-wrap").classList.remove("hidden");
+  await sleep(500);
+  await stream($("draft-body"), currentMsg.draft(UNITS[currentMsg.unit]));
+  audit(`agent.guest_reply  unit=${currentMsg.unit}  channel=${currentMsg.chan.toLowerCase()}  status=drafted`, 700+Math.floor(Math.random()*200));
+  $("btn-draft").disabled = false;
+}
+function approveDraft() {
+  audit(`human.approve_send  unit=${currentMsg.unit}  status=sent`, 0);
+  $("draft-wrap").classList.add("hidden");
+}
+
+async function runIntake() {
+  const w = $("wf-trace"); w.classList.remove("hidden"); w.innerHTML="";
+  const add = h => { const d=document.createElement("div"); d.innerHTML=h; w.appendChild(d); };
+  add(`<span class="text-amber-400">▸ query_records</span> <span class="text-zinc-500">{"record_type":"unit","key":"HM-T2-18"}</span>`);
+  await sleep(700);
+  add(`<span class="text-emerald-400">✓</span> <span class="text-zinc-400">unit found · owner: M. Weiss · AC vendor on contract: CoolTech Herzliya</span>`);
+  await sleep(600);
+  add(`<span class="text-amber-400">▸ upsert_record</span> <span class="text-zinc-500">{"record_type":"ticket","key":"T-1042","fields":{"issue":"living-room AC failure","priority":"HIGH","vendor":"CoolTech Herzliya"}}</span>`);
+  await sleep(800);
+  add(`<span class="text-emerald-400">✓</span> <span class="text-zinc-400">inserted · ticket/T-1042 · vendor WhatsApp drafted (07:00 slot request)</span>`);
+  await sleep(600);
+  add(`<span class="text-amber-400">▸ draft_document</span> <span class="text-zinc-500">owner_notice + guest_reply + goodwill_flag</span>`);
+  await sleep(700);
+  add(`<span class="text-emerald-400">✓ done</span> <span class="text-zinc-400">3 drafts queued for review · owner notice includes repair cost pre-approval request (est ₪450–600)</span>`);
+  TICKETS.unshift({ id:"T-1042", unit:"HM-T2-18", issue:"Living-room AC failure (guest report)", pri:"HIGH", status:"vendor pinged · awaiting 07:00 slot", vendor:"CoolTech Herzliya" });
+  renderTickets();
+  audit(`agent.maintenance_intake  ticket=T-1042  unit=HM-T2-18  drafts=3  status=queued`, 1962);
+}
+
+function renderTickets() {
+  const pc = {HIGH:"bg-rose-500/10 text-rose-400 ring-rose-500/30",MED:"bg-amber-500/10 text-amber-400 ring-amber-500/30",LOW:"bg-zinc-700/40 text-zinc-400 ring-zinc-600/40"};
+  $("ticket-list").innerHTML = TICKETS.map(t=>`
+    <div class="flex flex-wrap items-center gap-3 px-5 py-3 text-sm">
+      <span class="font-mono text-xs text-zinc-500">${t.id}</span>
+      <span class="inline-flex rounded-full px-2 py-0.5 text-[10px] font-medium ring-1 ${pc[t.pri]}">${t.pri}</span>
+      <span class="flex-1 text-zinc-300">${t.issue} <span class="font-mono text-xs text-zinc-600">· ${UNITS[t.unit].name}</span></span>
+      <span class="font-mono text-xs text-zinc-500">${t.vendor}</span>
+      <span class="font-mono text-xs text-emerald-400">${t.status}</span>
+    </div>`).join("");
+  $("maint-badge").textContent = TICKETS.length;
+}
+
+function renderOwners() {
+  $("owner-list").innerHTML = Object.entries(OWNERS).map(([k,o])=>`
+    <button onclick="genStmt('${k}')" class="block w-full border-b border-zinc-800/70 px-4 py-3 text-left transition hover:bg-zinc-800/30">
+      <p class="text-sm font-medium text-zinc-200">${o.name}</p>
+      <p class="font-mono text-[11px] text-zinc-500">${o.loc} · ${o.units.length} units</p>
+    </button>`).join("");
+}
+async function genStmt(k) {
+  $("stmt-empty").classList.add("hidden"); $("stmt").classList.remove("hidden");
+  $("stmt-body").textContent="";
+  await stream($("stmt-body"), OWNERS[k].stmt, 6);
+  audit(`agent.owner_statement  owner=${k}  status=drafted`, 1800+Math.floor(Math.random()*300));
+}
+
+function renderCal() {
+  const days=14, today=new Date("2026-07-19");
+  const pattern = {
+    "BY82-4":  "AAAA..BBBDDD..", "DZ210-12":"DDDDDAAA..DDDD", "RT33-7":"BBAAAAAA.DDDD.",
+    "HY156-2": "..AA...BBB..AA", "HM-T2-18":"BBBBBBAAAADDDD", "FL9-1":  "AAA.DDDD..AAAA",
+  };
+  const cls={A:"bg-rose-400/80",B:"bg-sky-400/80",D:"bg-emerald-400/80",".":"bg-zinc-800"};
+  let head=`<div class="flex items-center gap-1 pl-44 font-mono text-[9px] text-zinc-600">`;
+  for(let i=0;i<days;i++){const d=new Date(today);d.setDate(d.getDate()+i);head+=`<span class="w-6 text-center">${d.getDate()}</span>`;}
+  head+="</div>";
+  $("cal").innerHTML = head + Object.entries(UNITS).map(([k,u])=>{
+    const cells=[...pattern[k]].map(c=>`<span class="h-6 w-6 rounded-sm ${cls[c]}" title="${{A:'Airbnb',B:'Booking',D:'Direct','.':'Vacant'}[c]}"></span>`).join("");
+    return `<div class="flex items-center gap-1"><span class="w-44 shrink-0 truncate font-mono text-[11px] text-zinc-400">${u.name}</span>${cells}</div>`;
+  }).join("");
+}
+
+renderMsgs(); renderTickets(); renderOwners(); renderCal();
+</script>
+</body>
+</html>
